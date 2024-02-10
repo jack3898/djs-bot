@@ -1,0 +1,16 @@
+{
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/dist"],
+      "inputs": ["{projectRoot}/**/*", "!{projectRoot}/dist/**/*"]
+    }
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "options": {
+        "cacheableOperations": ["build"]
+      }
+    }
+  }
+}
