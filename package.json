@@ -7,7 +7,8 @@
   "scripts": {
     "build": "nx run-many --target=build --all",
     "start": "nx run-many --target=start --all",
-    "dev": "nx run-many --target=dev --all"
+    "dev": "nx run-many --target=dev --all",
+    "lint": "nx run-many --target=lint --all"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +30,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "discord.js": "^14.14.1"
+    "discord.js": "^14.14.1",
+    "zod": "^3.22.4"
   }
 }
