@@ -27,6 +27,12 @@ export class Client extends DiscordClient {
             ? Routes.applicationGuildCommands(env.CLIENT_ID, env.GUILD_ID)
             : Routes.applicationCommands(env.CLIENT_ID);
 
+        if (!env.GUILD_ID) {
+            console.warn(
+                'No GUILD_ID was provided, this means the commands will be global and may take up to an hour to propagate.'
+            );
+        }
+
         await this.rest.put(route, {
             body: this.commands.map((command) => command.definition.toJSON())
         });

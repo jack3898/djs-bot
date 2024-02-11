@@ -1,0 +1,1 @@
+export { isExtendedBot } from './isExtendedBot';
