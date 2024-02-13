@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { getEnv } from '@bot/utils';
 
 const envSchema = z.object({
     DISCORD_TOKEN: z.string().min(1, 'Discord token must be defined to authenticate the bot.'),
@@ -7,23 +8,8 @@ const envSchema = z.object({
     GUILD_ID: z.string().optional()
 });
 
-export type Env = z.infer<typeof envSchema>;
+export const env = await getEnv(envSchema);
 
-export const env = await envSchema.safeParseAsync(process.env).then((result) => {
-    if (!result.success) {
-        console.error(
-            result.error.errors
-                .map((error) => `Invalid ${error.path} in environment. ${error.message}`)
-                .join('\n')
-        );
-
-        process.exit(1);
-    }
-
-    // I could loop through the keys, but that will risk exposing sensitive information like tokens.
-    console.info('NODE_ENV =', result.data.NODE_ENV);
-    console.info('CLIENT_ID =', result.data.CLIENT_ID);
-    console.info('GUILD_ID =', result.data.GUILD_ID);
-
-    return result.data;
-});
+console.info('NODE_ENV =', env.NODE_ENV);
+console.info('CLIENT_ID =', env.CLIENT_ID);
+console.info('GUILD_ID =', env.GUILD_ID);

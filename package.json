@@ -7,8 +7,9 @@
   "scripts": {
     "build": "nx run-many --target=build --all",
     "start": "nx run-many --target=start --all",
-    "dev": "nx run-many --target=dev --all",
-    "lint": "nx run-many --target=lint --all"
+    "dev": "nx run-many --target=dev --all --output-style=stream --parallel",
+    "lint": "nx run-many --target=lint --all",
+    "postinstall": "nx run-many --target=build --all"
   },
   "keywords": [],
   "author": "",
