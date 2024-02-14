@@ -9,6 +9,6 @@
     "start": "node dist/index.js --env-file .env",
     "lint": "eslint"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Jack Wright <github@sec.jackwmail.com>",
+  "license": "GPL-3.0-only"
 }
