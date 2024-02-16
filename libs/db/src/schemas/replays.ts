@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-export const replaysSchema = new Schema(
+const replaysSchema = new Schema(
     {
         buffer: {
             type: Buffer,
@@ -12,13 +12,11 @@ export const replaysSchema = new Schema(
         },
         ownerId: {
             type: String,
-            required: true,
-            index: true
+            required: true
         },
         shaHash: {
             type: String,
-            required: true,
-            index: true
+            required: true
         },
         docVersion: {
             type: Number,
@@ -31,3 +29,8 @@ export const replaysSchema = new Schema(
         timestamps: true
     }
 );
+
+replaysSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 5 * 60 });
+replaysSchema.index({ ownerId: 1, shaHash: 1 }, { unique: true });
+
+export { replaysSchema };
