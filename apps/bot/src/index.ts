@@ -15,7 +15,7 @@ client[events.interactionCreate.mode](Events.InteractionCreate, events.interacti
 
 // Register all commands
 // Again, no point overcomplicating this with loops!
-client.registerSlashCommand(commands.danser);
+client.registerSlashCommand(commands.recordReplay);
 
 // Strap things up!
 client.publishSlashCommands();

@@ -1,1 +1,1 @@
-export { danser } from './danser';
+export { recordReplay } from './recordReplay';
