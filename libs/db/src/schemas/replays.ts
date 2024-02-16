@@ -30,7 +30,7 @@ const replaysSchema = new Schema(
     }
 );
 
-replaysSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 5 * 60 });
+replaysSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 }); // 24 hours
 replaysSchema.index({ ownerId: 1, shaHash: 1 }, { unique: true });
 
 export { replaysSchema };

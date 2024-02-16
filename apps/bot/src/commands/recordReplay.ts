@@ -1,6 +1,6 @@
 import { download } from '@bot/utils';
 import { type CommandInteraction, SlashCommandBuilder } from 'discord.js';
-import { replaysModel } from 'mongo';
+import { queueModel, replaysModel } from 'mongo';
 import { type Command } from 'types/Command';
 import { createHash } from 'crypto';
 
@@ -39,25 +39,32 @@ export const recordReplay: Command = {
 
         await interaction.editReply('Replay file fetched, saving to db...');
 
+        const fileExists = await replaysModel.exists({ shaHash: replayHash });
+
         // Update the filename of the replay in the db if it already exists
-        if (await replaysModel.exists({ shaHash: replayHash })) {
-            await replaysModel.findOneAndUpdate(
-                { shaHash: replayHash },
-                { filename: replayFileName }
-            );
+        const replay = fileExists
+            ? await replaysModel.findOneAndUpdate(
+                  { shaHash: replayHash },
+                  { filename: replayFileName }
+              )
+            : await replaysModel.create({
+                  buffer: replayFile,
+                  filename: replayFileName,
+                  shaHash: replayHash,
+                  ownerId: interaction.user.id
+              });
 
-            await interaction.editReply('Replay already exists in db, updated filename.');
-
-            return;
+        if (replay) {
+            queueModel.create({
+                replayId: replay._id,
+                ownerId: interaction.user.id
+            });
         }
 
-        const queueItem = await replaysModel.create({
-            buffer: replayFile,
-            filename: replayFileName,
-            shaHash: replayHash,
-            ownerId: interaction.user.id
-        });
+        console.info(
+            `Replay with hash ${replayHash} saved to db. Already existed status: ${fileExists}`
+        );
 
-        await interaction.editReply(`Replay saved to db with ID: ${queueItem._id}`);
+        await interaction.editReply('Queue job created!');
     }
 };
