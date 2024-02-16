@@ -12,7 +12,7 @@ const envSchema = z.object({
     DANSER_CONFIG_NAME: z
         .string()
         .min(1, 'Danser config path must be defined to generate replays.'),
-    FILES_PATH: z.string().min(1, 'Files path must be defined to store temporary files.')
+    MONGO_URI: z.string().min(1, 'Mongo URI must be defined to connect to the database.')
 });
 
 export const env = await getEnv(envSchema);
@@ -22,4 +22,3 @@ console.info('CLIENT_ID =', env.CLIENT_ID);
 console.info('GUILD_ID =', env.GUILD_ID);
 console.info('DANSER_EXECUTABLE_PATH =', env.DANSER_EXECUTABLE_PATH);
 console.info('DANSER_CONFIG_NAME =', env.DANSER_CONFIG_NAME);
-console.info('FILES_PATH =', env.FILES_PATH);
