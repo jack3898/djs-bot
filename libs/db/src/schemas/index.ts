@@ -1,1 +1,1 @@
-export * from './replays';
+export * from './files';

@@ -1,9 +1,10 @@
 import { download } from '@bot/utils';
 import { type CommandInteraction, SlashCommandBuilder } from 'discord.js';
-import { replaysModel } from 'mongo';
+import { filesModel } from 'mongo';
 import { type Command } from 'types';
 import { createHash } from 'crypto';
 import { recordReplayQueue } from 'queues';
+import { Types } from 'mongoose';
 
 export const recordReplay: Command = {
     get name(): string {
@@ -40,17 +41,18 @@ export const recordReplay: Command = {
 
         await interaction.editReply('Replay file fetched, saving to db...');
 
-        const fileExists = await replaysModel.exists({ shaHash: replayHash });
+        const fileExists = await filesModel.exists({ shaHash: replayHash });
 
         // Update the filename of the replay in the db if it already exists
         const replay = fileExists
-            ? await replaysModel.findOneAndUpdate(
+            ? await filesModel.findOneAndUpdate(
                   { shaHash: replayHash },
                   { filename: replayFileName }
               )
-            : await replaysModel.create({
+            : await filesModel.create({
                   buffer: replayFile,
                   filename: replayFileName,
+                  filetype: 'osr',
                   shaHash: replayHash,
                   ownerId: interaction.user.id
               });
@@ -58,21 +60,30 @@ export const recordReplay: Command = {
         if (replay) {
             await interaction.editReply('Queueing job to process replay...');
 
+            const videoId = new Types.ObjectId();
+
             await recordReplayQueue.add({
                 executable: process.env.DANSER_EXECUTABLE_PATH,
                 replayId: replay._id,
+                videoId,
                 danserOptions: [
                     '--quickstart',
-                    `--out=${replayHash}`,
+                    `--out=${videoId}`,
                     `--settings=${process.env.DANSER_CONFIG_NAME}`
                 ]
             });
+
+            console.info(
+                `Replay with hash ${replayHash} saved to db. Already existed status: ${!!fileExists}`
+            );
+
+            await interaction.editReply(
+                `Queue job created! Your replay download page: http://localhost:3000/replays/${videoId} `
+            );
+
+            return;
         }
 
-        console.info(
-            `Replay with hash ${replayHash} saved to db. Already existed status: ${!!fileExists}`
-        );
-
-        await interaction.editReply('Queue job created!');
+        await interaction.editReply('Failed to create replay job.');
     }
 };

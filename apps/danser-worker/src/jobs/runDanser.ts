@@ -1,9 +1,10 @@
 import { type ReplayQueueJob } from '@bot/queue';
 import type Bull from 'bull';
 import { execFile } from 'child_process';
-import { replaysModel } from 'mongo';
-import { deleteFile, exists, fromMonorepoRoot, makeDir, writeFile } from '@bot/utils';
+import { filesModel } from 'mongo';
+import { deleteFile, exists, fromMonorepoRoot, makeDir, readFile, writeFile } from '@bot/utils';
 import path from 'path';
+import { createHash } from 'crypto';
 
 /**
  * Run the Danser executable with the given options to process a replay into a video.
@@ -12,24 +13,31 @@ import path from 'path';
 export async function runDanserJob(job: Bull.Job<ReplayQueueJob>): Promise<void> {
     console.log('Processing job:', job.data);
 
-    const file = await replaysModel.findById(job.data.replayId);
+    const file = await filesModel.findById(job.data.replayId);
 
     if (!file) {
         throw new Error(`Replay with id ${job.data.replayId} not found`);
     }
 
     const replaysTempDir = fromMonorepoRoot('.data', 'replays');
-    const replayTempDirExists = await exists(replaysTempDir);
+    const videosTempDir = fromMonorepoRoot('.data', 'videos');
+    const replaysTempDirExists = await exists(replaysTempDir);
+    const videosTempDirExists = await exists(videosTempDir);
 
-    if (!replayTempDirExists) {
+    if (!replaysTempDirExists) {
         await makeDir(replaysTempDir, { recursive: true });
     }
 
+    if (!videosTempDirExists) {
+        await makeDir(videosTempDir, { recursive: true });
+    }
+
     const replayFileLocation = path.resolve(replaysTempDir, `${job.data.replayId}.osr`);
+    const replayVideoLocation = path.resolve(videosTempDir, `${job.data.videoId}.mp4`);
 
     await writeFile(replayFileLocation, file.buffer);
 
-    return new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
         execFile(
             job.data.executable,
             [`--replay=${replayFileLocation}`, ...job.data.danserOptions],
@@ -48,12 +56,24 @@ export async function runDanserJob(job: Bull.Job<ReplayQueueJob>): Promise<void>
             }
         ).on('exit', (code) => {
             if (code === 0) {
-                deleteFile(replayFileLocation);
-
                 resolve();
             }
 
             reject(new Error(`Danser exited with code ${code}`));
         });
     });
+
+    const video = await readFile(replayVideoLocation);
+    const videoHash = createHash('sha256').update(video).digest('hex');
+
+    await filesModel.create({
+        _id: job.data.videoId,
+        buffer: video,
+        filename: `${job.data.videoId}.mp4`,
+        filetype: 'mp4',
+        shaHash: videoHash,
+        ownerId: file.ownerId
+    });
+
+    await Promise.all([deleteFile(replayFileLocation), deleteFile(replayVideoLocation)]);
 }
