@@ -1,8 +1,9 @@
 import { download } from '@bot/utils';
 import { type CommandInteraction, SlashCommandBuilder } from 'discord.js';
-import { queueModel, replaysModel } from 'mongo';
-import { type Command } from 'types/Command';
+import { replaysModel } from 'mongo';
+import { type Command } from 'types';
 import { createHash } from 'crypto';
+import { recordReplayQueue } from 'queues';
 
 export const recordReplay: Command = {
     get name(): string {
@@ -55,14 +56,21 @@ export const recordReplay: Command = {
               });
 
         if (replay) {
-            queueModel.create({
+            await interaction.editReply('Queueing job to process replay...');
+
+            await recordReplayQueue.add({
+                executable: process.env.DANSER_EXECUTABLE_PATH,
                 replayId: replay._id,
-                ownerId: interaction.user.id
+                danserOptions: [
+                    '--quickstart',
+                    `--out=${replayHash}`,
+                    `--settings=${process.env.DANSER_CONFIG_NAME}`
+                ]
             });
         }
 
         console.info(
-            `Replay with hash ${replayHash} saved to db. Already existed status: ${fileExists}`
+            `Replay with hash ${replayHash} saved to db. Already existed status: ${!!fileExists}`
         );
 
         await interaction.editReply('Queue job created!');

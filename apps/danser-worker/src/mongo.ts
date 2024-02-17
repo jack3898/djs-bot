@@ -4,6 +4,4 @@ import { schemas } from '@bot/db';
 
 await mongoose.connect(env.MONGO_URI);
 
-const queueModel = mongoose.model('replays', schemas.replaysSchema);
-
-export { queueModel };
+export const replaysModel = mongoose.model('replays', schemas.replaysSchema);

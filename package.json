@@ -30,9 +30,11 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "bull": "^4.12.2",
     "discord.js": "^14.14.1",
     "fastify": "^4.26.1",
     "mongoose": "^8.1.2",
+    "redis": "^4.6.13",
     "zod": "^3.22.4"
   }
 }

@@ -12,7 +12,14 @@ const envSchema = z.object({
     DANSER_CONFIG_NAME: z
         .string()
         .min(1, 'Danser config path must be defined to generate replays.'),
-    MONGO_URI: z.string().min(1, 'Mongo URI must be defined to connect to the database.')
+    MONGO_URI: z
+        .string()
+        .url()
+        .transform((url) => new URL(url)),
+    KEYDB_URI: z
+        .string()
+        .url()
+        .transform((url) => new URL(url))
 });
 
 export const env = await getEnv(envSchema);

@@ -2,8 +2,7 @@
   "name": "@bot/danser-worker",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "devDependencies": {},
+  "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts --env-file .env",
     "build": "tsc",

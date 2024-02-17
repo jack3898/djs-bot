@@ -26,11 +26,13 @@ const replaysSchema = new Schema(
     },
     {
         collection: 'replays',
-        timestamps: true
+        timestamps: true,
+        autoIndex: true
     }
 );
 
 replaysSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 }); // 24 hours
-replaysSchema.index({ ownerId: 1, shaHash: 1 }, { unique: true });
+replaysSchema.index({ shaHash: 1 }, { unique: true });
+replaysSchema.index({ ownerId: 1 });
 
 export { replaysSchema };
