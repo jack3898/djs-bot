@@ -1,10 +1,8 @@
-import { download } from '@bot/utils';
+import { download, sha1hash } from '@bot/utils';
 import { type CommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { filesModel } from 'mongo';
 import { type Command } from 'types';
-import { createHash } from 'crypto';
 import { recordReplayQueue } from 'queues';
-import { Types } from 'mongoose';
 
 export const recordReplay: Command = {
     get name(): string {
@@ -37,7 +35,7 @@ export const recordReplay: Command = {
         await interaction.reply('Fetching replay from discord...');
 
         const replayFile = await download(new URL(replayUrl));
-        const replayHash = createHash('sha256').update(replayFile).digest('hex');
+        const replayHash = await sha1hash(replayFile);
 
         await interaction.editReply('Replay file fetched, saving to db...');
 
@@ -60,26 +58,17 @@ export const recordReplay: Command = {
         if (replay) {
             await interaction.editReply('Queueing job to process replay...');
 
-            const videoId = new Types.ObjectId();
-
             await recordReplayQueue.add({
                 executable: process.env.DANSER_EXECUTABLE_PATH,
                 replayId: replay._id,
-                videoId,
-                danserOptions: [
-                    '--quickstart',
-                    `--out=${videoId}`,
-                    `--settings=${process.env.DANSER_CONFIG_NAME}`
-                ]
+                danserOptions: ['--quickstart', `--settings=${process.env.DANSER_CONFIG_NAME}`]
             });
 
             console.info(
                 `Replay with hash ${replayHash} saved to db. Already existed status: ${!!fileExists}`
             );
 
-            await interaction.editReply(
-                `Queue job created! Your replay download page: http://localhost:3000/replays/${videoId} `
-            );
+            await interaction.editReply('Queue job created!');
 
             return;
         }
