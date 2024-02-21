@@ -11,7 +11,8 @@ export function uploadToObjectStorage(
         new PutObjectCommand({
             Bucket: bucketName,
             Key: filename,
-            Body: body
+            Body: body,
+            ACL: 'public-read'
         })
     );
 }

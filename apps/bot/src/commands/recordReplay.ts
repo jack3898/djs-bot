@@ -3,6 +3,8 @@ import { type CommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { filesModel } from 'mongo';
 import { type Command } from 'types';
 import { recordReplayQueue } from 'queues';
+import { KEYS } from '@bot/queue';
+import { env } from 'env';
 
 export const recordReplay: Command = {
     get name(): string {
@@ -58,17 +60,23 @@ export const recordReplay: Command = {
         if (replay) {
             await interaction.editReply('Queueing job to process replay...');
 
-            await recordReplayQueue.add({
-                executable: process.env.DANSER_EXECUTABLE_PATH,
-                replayId: replay._id,
-                danserOptions: ['--quickstart', `--settings=${process.env.DANSER_CONFIG_NAME}`]
+            await recordReplayQueue.add(KEYS.RECORD, {
+                executable: env.DANSER_EXECUTABLE_PATH,
+                replayId: replay._id.toString(),
+                danserOptions: ['--quickstart', `--settings=${env.DANSER_CONFIG_NAME}`]
             });
 
             console.info(
                 `Replay with hash ${replayHash} saved to db. Already existed status: ${!!fileExists}`
             );
 
-            await interaction.editReply('Queue job created!');
+            const downloadUrl = new URL(
+                `https://${env.S3_BUCKET_NAME}.${env.S3_REGION}.${env.S3_DOMAIN}`
+            );
+
+            downloadUrl.pathname = `/${replay._id}.mp4`;
+
+            await interaction.editReply(downloadUrl.toString());
 
             return;
         }

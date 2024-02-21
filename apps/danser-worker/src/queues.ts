@@ -1,17 +1,23 @@
-import { createRecordReplayQueue } from '@bot/queue';
+import { type RecordJob, KEYS } from '@bot/queue';
+import { Worker } from 'bullmq';
 import { env } from 'env';
+import { runDanserJob } from 'jobs';
 
-export const recordReplayQueue = createRecordReplayQueue({
-    redis: {
-        host: env.KEYDB_URI.hostname,
-        port: +env.KEYDB_URI.port
+export const recordReplayQueueWorker = new Worker<RecordJob>(
+    KEYS.RECORD,
+    (job) => {
+        console.log(`Processing job ${job.id}`);
+
+        return runDanserJob(job);
+    },
+    {
+        connection: {
+            host: env.KEYDB_URI.hostname,
+            port: +env.KEYDB_URI.port
+        }
     }
-});
+);
 
-recordReplayQueue.on('failed', (job, err) => {
-    console.error('Job failed:', job.id, err);
-});
-
-recordReplayQueue.on('error', (error) => {
-    console.error('An error occurred:', error);
+recordReplayQueueWorker.on('completed', (job) => {
+    console.log(`Job ${job.id} completed`);
 });

@@ -19,7 +19,10 @@ const envSchema = z.object({
     KEYDB_URI: z
         .string()
         .url()
-        .transform((url) => new URL(url))
+        .transform((url) => new URL(url)),
+    S3_DOMAIN: z.string(),
+    S3_REGION: z.string(),
+    S3_BUCKET_NAME: z.string()
 });
 
 export const env = await getEnv(envSchema);

@@ -1,5 +1,5 @@
-import { type ReplayQueueJob } from '@bot/queue';
-import type Bull from 'bull';
+import { type RecordJob } from '@bot/queue';
+import type Bull from 'bullmq';
 import { execFile } from 'child_process';
 import { filesModel } from 'mongo';
 import {
@@ -8,7 +8,6 @@ import {
     fromMonorepoRoot,
     makeDir,
     readFileAsStream,
-    sha1hash,
     writeFile
 } from '@bot/utils';
 import { uploadToObjectStorage } from '@bot/storage';
@@ -22,7 +21,7 @@ const { S3_BUCKET_NAME } = env;
  * Run the Danser executable with the given options to process a replay into a video.
  * Downloads the replay file from the database and saves it to a temporary location before running Danser.
  */
-export async function runDanserJob(job: Bull.Job<ReplayQueueJob>): Promise<void> {
+export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
     console.log('Processing job:', job.data);
 
     const file = await filesModel.findById(job.data.replayId);
@@ -84,8 +83,7 @@ export async function runDanserJob(job: Bull.Job<ReplayQueueJob>): Promise<void>
     console.log(replayVideoLocation);
 
     // We need two streams of the video file, one to upload to object storage and one to hash
-    const videoHash = await sha1hash(readFileAsStream(replayVideoLocation));
-    const filename = `${videoHash}`;
+    const filename = `${job.data.replayId}.mp4`;
 
     console.info(`Uploading ${replayVideoLocation} as ${filename} to object storage...`);
 
