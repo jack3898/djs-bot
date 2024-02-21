@@ -14,7 +14,7 @@ export const recordReplay: Command = {
     },
     // @ts-expect-error - This is a valid definition, but discord.js types are complaining.
     definition: new SlashCommandBuilder()
-        .setName('record-replay')
+        .setName('render')
         .setDescription('Generate an Osu! replay using Danser.')
         .addAttachmentOption((option) => {
             return option
@@ -78,6 +78,7 @@ export const recordReplay: Command = {
             await recordReplayQueue.add(KEYS.RECORD, {
                 executable: env.DANSER_EXECUTABLE_PATH,
                 fileId: file._id.toString(),
+                friendlyName: String(replayFilename),
                 danserOptions: ['--quickstart', `--settings=${env.DANSER_CONFIG_NAME}`]
             });
 
@@ -85,7 +86,9 @@ export const recordReplay: Command = {
                 `Replay with hash ${fileHash} saved to db. Already existed status: ${!!fileExists}`
             );
 
-            await interaction.editReply('Ready!');
+            await interaction.editReply(
+                'Added to the queue! Use /replays to see it. It will not be available immediately.'
+            );
 
             return;
         }

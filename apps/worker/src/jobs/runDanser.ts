@@ -87,14 +87,14 @@ export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
 
     const videoStream = readFileAsStream(replayVideoLocation);
     const videoHash = await sha1hash(videoStream);
-    const filename = `${videoHash}.mp4`;
+    const s3Filename = `${videoHash}.mp4`;
 
-    console.info(`Uploading ${replayVideoLocation} as ${filename} to object storage...`);
+    console.info(`Uploading ${replayVideoLocation} as ${s3Filename} to object storage...`);
 
     await uploadToObjectStorage(
         s3Client,
         S3_BUCKET_NAME,
-        filename,
+        s3Filename,
         readFileAsStream(replayVideoLocation)
     );
 
@@ -104,11 +104,11 @@ export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
         `https://${env.S3_BUCKET_NAME}.${env.S3_REGION}.${env.S3_DOMAIN}`
     );
 
-    fileDownloadUrl.pathname = `/${filename}`;
+    fileDownloadUrl.pathname = `/${s3Filename}`;
 
     await storageModel.create({
         url: fileDownloadUrl.toString(),
-        filename,
+        filename: `${job.data.friendlyName}.mp4`,
         filetype: 'mp4',
         shaHash: videoHash,
         ownerId: file.ownerId

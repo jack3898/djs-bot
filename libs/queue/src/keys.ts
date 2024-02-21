@@ -5,6 +5,7 @@ export const KEYS = {
 export type RecordJob = {
     executable: string;
     fileId: string;
+    friendlyName: string;
     danserOptions: (`--settings=${string}` | `--quickstart`)[];
 };
 
