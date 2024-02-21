@@ -4,4 +4,4 @@ import { schemas } from '@bot/db';
 
 await mongoose.connect(env.MONGO_URI);
 
-export const filesModel = mongoose.model('replays', schemas.filesSchema);
+export const storageModel = mongoose.model('storage', schemas.storageSchema);

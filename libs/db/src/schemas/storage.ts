@@ -1,9 +1,9 @@
 import { Schema } from 'mongoose';
 
-const filesSchema = new Schema(
+const storageSchema = new Schema(
     {
-        buffer: {
-            type: Buffer,
+        url: {
+            type: String,
             required: true
         },
         filename: {
@@ -35,8 +35,8 @@ const filesSchema = new Schema(
     }
 );
 
-filesSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 60 * 10 });
-filesSchema.index({ shaHash: 1 }, { unique: true });
-filesSchema.index({ ownerId: 1 });
+storageSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 60 * 10 });
+storageSchema.index({ shaHash: 1 }, { unique: true });
+storageSchema.index({ ownerId: 1 });
 
-export { filesSchema };
+export { storageSchema };

@@ -4,7 +4,7 @@ export const KEYS = {
 
 export type RecordJob = {
     executable: string;
-    replayId: string;
+    fileId: string;
     danserOptions: (`--settings=${string}` | `--quickstart`)[];
 };
 

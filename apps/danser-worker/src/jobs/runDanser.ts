@@ -1,13 +1,15 @@
 import { type RecordJob } from '@bot/queue';
 import type Bull from 'bullmq';
 import { execFile } from 'child_process';
-import { filesModel } from 'mongo';
+import { storageModel } from 'mongo';
 import {
     deleteFile,
+    download,
     exists,
     fromMonorepoRoot,
     makeDir,
     readFileAsStream,
+    sha1hash,
     writeFile
 } from '@bot/utils';
 import { uploadToObjectStorage } from '@bot/storage';
@@ -24,10 +26,10 @@ const { S3_BUCKET_NAME } = env;
 export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
     console.log('Processing job:', job.data);
 
-    const file = await filesModel.findById(job.data.replayId);
+    const file = await storageModel.findById(job.data.fileId);
 
     if (!file) {
-        throw new Error(`Replay with id ${job.data.replayId} not found`);
+        throw new Error(`Replay with id ${job.data.fileId} not found`);
     }
 
     const replaysTempDir = fromMonorepoRoot('.data', 'replays');
@@ -43,17 +45,18 @@ export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
         await makeDir(videosTempDir, { recursive: true });
     }
 
-    const replayFileLocation = path.resolve(replaysTempDir, `${job.data.replayId}.osr`);
-    const replayVideoLocation = path.resolve(videosTempDir, `${job.data.replayId}.mp4`);
+    const replayFileLocation = path.resolve(replaysTempDir, `${job.data.fileId}.osr`);
+    const replayVideoLocation = path.resolve(videosTempDir, `${job.data.fileId}.mp4`);
+    const fileBuffer = await download(new URL(file.url));
 
-    await writeFile(replayFileLocation, file.buffer);
+    await writeFile(replayFileLocation, fileBuffer);
 
     await new Promise<void>((resolve, reject) => {
         execFile(
             job.data.executable,
             [
                 `--replay=${replayFileLocation}`,
-                `--out=${job.data.replayId}`,
+                `--out=${job.data.fileId}`,
                 ...job.data.danserOptions
             ],
             (error, stdout, stderr) => {
@@ -82,8 +85,9 @@ export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
 
     console.log(replayVideoLocation);
 
-    // We need two streams of the video file, one to upload to object storage and one to hash
-    const filename = `${job.data.replayId}.mp4`;
+    const videoStream = readFileAsStream(replayVideoLocation);
+    const videoHash = await sha1hash(videoStream);
+    const filename = `${videoHash}.mp4`;
 
     console.info(`Uploading ${replayVideoLocation} as ${filename} to object storage...`);
 
@@ -95,4 +99,18 @@ export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
     );
 
     await Promise.all([deleteFile(replayFileLocation), deleteFile(replayVideoLocation)]);
+
+    const fileDownloadUrl = new URL(
+        `https://${env.S3_BUCKET_NAME}.${env.S3_REGION}.${env.S3_DOMAIN}`
+    );
+
+    fileDownloadUrl.pathname = `/${filename}`;
+
+    await storageModel.create({
+        url: fileDownloadUrl.toString(),
+        filename,
+        filetype: 'mp4',
+        shaHash: videoHash,
+        ownerId: file.ownerId
+    });
 }
