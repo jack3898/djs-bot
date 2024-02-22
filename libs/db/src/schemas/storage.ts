@@ -6,19 +6,23 @@ const storageSchema = new Schema(
             type: String,
             required: true
         },
-        filename: {
+        name: {
             type: String,
             required: true
         },
-        filetype: {
+        type: {
             type: String,
             required: true
         },
-        ownerId: {
+        size: {
+            type: Number,
+            required: true
+        },
+        discordOwnerId: {
             type: String,
             required: true
         },
-        shaHash: {
+        sha1Hash: {
             type: String,
             required: true
         },
@@ -36,7 +40,7 @@ const storageSchema = new Schema(
 );
 
 storageSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 60 * 10 });
-storageSchema.index({ shaHash: 1 }, { unique: true });
-storageSchema.index({ ownerId: 1 });
+storageSchema.index({ sha1Hash: 1 }, { unique: true });
+storageSchema.index({ discordOwnerId: 1 });
 
 export { storageSchema };

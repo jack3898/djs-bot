@@ -51,7 +51,7 @@ export const recordReplay: Command = {
             replayFile
         );
 
-        const fileExists = await storageModel.exists({ shaHash: fileHash });
+        const fileExists = await storageModel.exists({ sha1Hash: fileHash });
 
         const downloadReplayUrl = new URL(
             `https://${env.S3_BUCKET_NAME}.${env.S3_REGION}.${env.S3_DOMAIN}`
@@ -60,16 +60,14 @@ export const recordReplay: Command = {
 
         // Update the filename of the replay in the db if it already exists
         const file = fileExists
-            ? await storageModel.findOneAndUpdate(
-                  { shaHash: fileHash },
-                  { filename: replayFilename }
-              )
+            ? await storageModel.findOneAndUpdate({ sha1Hash: fileHash }, { name: replayFilename })
             : await storageModel.create({
                   url: downloadReplayUrl.toString(),
-                  filename: replayFilename,
-                  filetype: 'osr',
-                  shaHash: fileHash,
-                  ownerId: interaction.user.id
+                  name: replayFilename,
+                  type: 'osr',
+                  size: replayFile.byteLength,
+                  sha1Hash: fileHash,
+                  discordOwnerId: interaction.user.id
               });
 
         if (file) {

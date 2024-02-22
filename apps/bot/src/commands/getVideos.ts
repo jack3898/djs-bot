@@ -10,13 +10,10 @@ export const getVideos: Command = {
         .setName('replays')
         .setDescription('Get your replays and their download URLs.'),
     async execute(interaction: CommandInteraction): Promise<void> {
-        const replays = await storageModel.find(
-            { ownerId: interaction.user.id, filetype: 'mp4' },
-            undefined,
-            { limit: 10, sort: { updatedAt: -1 } }
-        );
-
-        console.log(replays);
+        const replays = await storageModel
+            .find({ discordOwnerId: interaction.user.id, type: 'mp4' })
+            .limit(10)
+            .sort({ updatedAt: -1 });
 
         if (!replays.length) {
             interaction.reply({
@@ -31,9 +28,9 @@ export const getVideos: Command = {
             .setTitle('Your Replays')
             .setDescription('Here are your replays and their download URLs.')
             .addFields(
-                replays.map((replay) => ({
-                    name: replay.filename,
-                    value: `[Download ⬇️](${replay.url})`
+                replays.map(({ name, url }) => ({
+                    name,
+                    value: `[Download ⬇️](${url})`
                 }))
             );
 

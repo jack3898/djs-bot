@@ -7,6 +7,7 @@ import {
     download,
     exists,
     fromMonorepoRoot,
+    getSizeBytes,
     makeDir,
     readFileAsStream,
     sha1hash,
@@ -83,11 +84,9 @@ export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
 
     console.info('Finished rendering video! 📽️');
 
-    console.log(replayVideoLocation);
-
-    const videoStream = readFileAsStream(replayVideoLocation);
-    const videoHash = await sha1hash(videoStream);
+    const videoHash = await sha1hash(readFileAsStream(replayVideoLocation));
     const s3Filename = `${videoHash}.mp4`;
+    const videoFileSize = await getSizeBytes(replayVideoLocation);
 
     console.info(`Uploading ${replayVideoLocation} as ${s3Filename} to object storage...`);
 
@@ -108,9 +107,10 @@ export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
 
     await storageModel.create({
         url: fileDownloadUrl.toString(),
-        filename: `${job.data.friendlyName}.mp4`,
-        filetype: 'mp4',
-        shaHash: videoHash,
-        ownerId: file.ownerId
+        name: `${job.data.friendlyName}.mp4`,
+        type: 'mp4',
+        size: videoFileSize,
+        sha1Hash: videoHash,
+        discordOwnerId: file.discordOwnerId
     });
 }
