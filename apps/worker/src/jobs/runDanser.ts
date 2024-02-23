@@ -1,10 +1,10 @@
 import { type RecordJob } from '@bot/queue';
 import type Bull from 'bullmq';
-import { execFile } from 'child_process';
 import { storageModel } from 'mongo';
 import {
     deleteFile,
     download,
+    execute,
     exists,
     fromMonorepoRoot,
     getSizeBytes,
@@ -15,7 +15,6 @@ import {
 } from '@bot/utils';
 import path from 'path';
 import { s3Storage } from 'storage';
-import { env } from 'env';
 
 /**
  * Run the Danser executable with the given options to process a replay into a video.
@@ -47,31 +46,11 @@ export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
 
     await writeFile(replayFileLocation, replayFile);
 
-    await new Promise<void>((resolve, reject) => {
-        execFile(
-            job.data.executable,
-            [
-                `--replay=${replayFileLocation}`,
-                `--out=${job.data.friendlyName}`,
-                ...job.data.danserOptions
-            ],
-            (error, stdout, stderr) => {
-                if (stdout) {
-                    console.log(stdout);
-                }
-
-                if (stderr || error) {
-                    console.error(stderr || error);
-                }
-            }
-        ).on('exit', (code) => {
-            if (code === 0) {
-                resolve();
-            }
-
-            reject(new Error(`Danser exited with code ${code}`));
-        });
-    });
+    await execute(job.data.executable, [
+        `--replay=${replayFileLocation}`,
+        `--out=${job.data.friendlyName}`,
+        ...job.data.danserOptions
+    ]);
 
     console.info('Finished rendering video! 📽️');
 
@@ -88,9 +67,7 @@ export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
 
     await Promise.all([deleteFile(replayFileLocation), deleteFile(replayVideoLocation)]);
 
-    const fileDownloadUrl = new URL(
-        `https://${env.S3_BUCKET_NAME}.${env.S3_REGION}.${env.S3_DOMAIN}`
-    );
+    const fileDownloadUrl = new URL(s3Storage.endpoint);
 
     fileDownloadUrl.pathname = `/${s3Filename}`;
 
