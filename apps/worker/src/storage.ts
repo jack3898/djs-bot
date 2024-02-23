@@ -1,12 +1,10 @@
-import { S3Client } from '@aws-sdk/client-s3';
 import { env } from './env';
+import { S3Storage } from '@bot/utils';
 
-export const s3Client = new S3Client({
+export const s3Storage = new S3Storage({
     region: env.S3_REGION,
-    endpoint: new URL(`https://${env.S3_REGION}.${env.S3_DOMAIN}`).toString(),
-    forcePathStyle: false,
-    credentials: {
-        accessKeyId: env.S3_ACCESS_KEY_ID,
-        secretAccessKey: env.S3_SECRET_ACCESS_KEY
-    }
+    domain: env.S3_DOMAIN,
+    accessKeyId: env.S3_ACCESS_KEY_ID,
+    secretAccessKey: env.S3_SECRET_ACCESS_KEY,
+    bucketName: env.S3_BUCKET_NAME
 });

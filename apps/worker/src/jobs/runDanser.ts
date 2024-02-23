@@ -13,12 +13,9 @@ import {
     sha1hash,
     writeFile
 } from '@bot/utils';
-import { uploadToObjectStorage } from '@bot/storage';
 import path from 'path';
-import { s3Client } from 'storage';
+import { s3Storage } from 'storage';
 import { env } from 'env';
-
-const { S3_BUCKET_NAME } = env;
 
 /**
  * Run the Danser executable with the given options to process a replay into a video.
@@ -90,12 +87,10 @@ export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
 
     console.info(`Uploading ${replayVideoLocation} as ${s3Filename} to object storage...`);
 
-    await uploadToObjectStorage(
-        s3Client,
-        S3_BUCKET_NAME,
-        s3Filename,
-        readFileAsStream(replayVideoLocation)
-    );
+    await s3Storage.upload({
+        filename: s3Filename,
+        body: readFileAsStream(replayVideoLocation)
+    });
 
     await Promise.all([deleteFile(replayFileLocation), deleteFile(replayVideoLocation)]);
 

@@ -5,8 +5,7 @@ import { type Command } from 'types';
 import { recordReplayQueue } from 'queues';
 import { KEYS } from '@bot/queue';
 import { env } from 'env';
-import { s3Client } from 'storage';
-import { uploadToObjectStorage } from '@bot/storage';
+import { s3Storage } from 'storage';
 
 export const recordReplay: Command = {
     get name(): string {
@@ -44,12 +43,10 @@ export const recordReplay: Command = {
 
         await interaction.editReply('Replay file fetched, saving...');
 
-        await uploadToObjectStorage(
-            s3Client,
-            env.S3_BUCKET_NAME,
-            storageReplayFilename,
-            replayFile
-        );
+        await s3Storage.upload({
+            filename: storageReplayFilename,
+            body: replayFile
+        });
 
         const fileExists = await storageModel.exists({ sha1Hash: fileHash });
 
