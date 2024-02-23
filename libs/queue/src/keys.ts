@@ -4,8 +4,9 @@ export const KEYS = {
 
 export type RecordJob = {
     executable: string;
-    fileId: string;
+    replayDownloadUrl: string;
     friendlyName: string;
+    discordUserId: string;
     danserOptions: (`--settings=${string}` | `--quickstart`)[];
 };
 

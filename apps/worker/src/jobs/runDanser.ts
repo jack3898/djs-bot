@@ -22,12 +22,11 @@ import { env } from 'env';
  * Downloads the replay file from the database and saves it to a temporary location before running Danser.
  */
 export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
-    console.log('Processing job:', job.data);
+    // Replay file should be small enough to download and process in memory
+    const replayFile = await download(new URL(job.data.replayDownloadUrl));
 
-    const file = await storageModel.findById(job.data.fileId);
-
-    if (!file) {
-        throw new Error(`Replay with id ${job.data.fileId} not found`);
+    if (!replayFile) {
+        throw new Error(`Unable to download replay from Discord CDN.`);
     }
 
     const replaysTempDir = fromMonorepoRoot('.data', 'replays');
@@ -43,31 +42,26 @@ export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
         await makeDir(videosTempDir, { recursive: true });
     }
 
-    const replayFileLocation = path.resolve(replaysTempDir, `${job.data.fileId}.osr`);
-    const replayVideoLocation = path.resolve(videosTempDir, `${job.data.fileId}.mp4`);
-    const fileBuffer = await download(new URL(file.url));
+    const replayFileLocation = path.resolve(replaysTempDir, `${job.data.friendlyName}.osr`);
+    const replayVideoLocation = path.resolve(videosTempDir, `${job.data.friendlyName}.mp4`);
 
-    await writeFile(replayFileLocation, fileBuffer);
+    await writeFile(replayFileLocation, replayFile);
 
     await new Promise<void>((resolve, reject) => {
         execFile(
             job.data.executable,
             [
                 `--replay=${replayFileLocation}`,
-                `--out=${job.data.fileId}`,
+                `--out=${job.data.friendlyName}`,
                 ...job.data.danserOptions
             ],
             (error, stdout, stderr) => {
-                if (error) {
-                    throw error;
-                }
-
                 if (stdout) {
                     console.log(stdout);
                 }
 
-                if (stderr) {
-                    console.error(stderr);
+                if (stderr || error) {
+                    console.error(stderr || error);
                 }
             }
         ).on('exit', (code) => {
@@ -106,6 +100,6 @@ export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
         type: 'mp4',
         size: videoFileSize,
         sha1Hash: videoHash,
-        discordOwnerId: file.discordOwnerId
+        discordOwnerId: job.data.discordUserId
     });
 }
