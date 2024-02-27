@@ -4,7 +4,7 @@ import { recordReplayQueue } from 'queues';
 import { KEYS } from '@bot/queue';
 import { env } from 'env';
 
-export const recordReplay: Command = {
+export const render: Command = {
     get name(): string {
         return this.definition.name;
     },

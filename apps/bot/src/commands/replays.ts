@@ -2,7 +2,7 @@ import { type CommandInteraction, SlashCommandBuilder, EmbedBuilder } from 'disc
 import { storageModel } from 'mongo';
 import { type Command } from 'types';
 
-export const getVideos: Command = {
+export const replays: Command = {
     get name(): string {
         return this.definition.name;
     },

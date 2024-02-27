@@ -1,2 +1,2 @@
-export { recordReplay } from './recordReplay';
-export { getVideos } from './getVideos';
+export { render } from './render';
+export { replays } from './replays';

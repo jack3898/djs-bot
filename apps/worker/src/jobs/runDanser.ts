@@ -24,12 +24,13 @@ export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
     // Replay file should be small enough to download and process in memory
     const replayFile = await download(new URL(job.data.replayDownloadUrl));
 
-    if (!replayFile) {
+    if (!replayFile.byteLength) {
         throw new Error(`Unable to download replay from Discord CDN.`);
     }
 
     const replaysTempDir = fromMonorepoRoot('.data', 'replays');
     const videosTempDir = fromMonorepoRoot('.data', 'videos');
+
     const replaysTempDirExists = await exists(replaysTempDir);
     const videosTempDirExists = await exists(videosTempDir);
 
@@ -64,6 +65,8 @@ export async function runDanserJob(job: Bull.Job<RecordJob>): Promise<void> {
         filename: s3Filename,
         body: readFileAsStream(replayVideoLocation)
     });
+
+    console.info(`Uploaded ${replayVideoLocation} as ${s3Filename} to object storage!`);
 
     await Promise.all([deleteFile(replayFileLocation), deleteFile(replayVideoLocation)]);
 
