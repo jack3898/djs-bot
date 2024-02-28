@@ -16,31 +16,30 @@ export function getEnv<T extends ZodTypeAny>(schema: T): Promise<z.infer<T>> {
     });
 }
 
+function toUrl(strUrl: string): URL {
+    return new URL(strUrl);
+}
+
 // SCHEMAS
 
 export const coreEnv = {
-    DISCORD_TOKEN: z.string().min(1, 'Discord token must be defined to authenticate the bot.'),
+    DISCORD_TOKEN: z.string(),
     NODE_ENV: z.enum(['development', 'production', 'test']),
-    CLIENT_ID: z.string().min(1, 'Client ID must be defined to register slash commands.'),
+    CLIENT_ID: z.string(),
     GUILD_ID: z.string().optional()
 };
 
 export const danserEnv = {
-    DANSER_EXECUTABLE_PATH: z
-        .string()
-        .min(1, 'Danser executable path must be defined to generate replays.'),
-    DANSER_CONFIG_NAME: z.string().min(1, 'Danser config path must be defined to generate replays.')
+    DANSER_EXECUTABLE_PATH: z.string(),
+    DANSER_CONFIG_NAME: z.string()
 };
 
 export const mongoEnv = {
-    MONGO_URI: z.string().min(1, 'Mongo URI must be defined to connect to the database.')
+    MONGO_URI: z.string().transform(toUrl)
 };
 
 export const keydbEnv = {
-    KEYDB_URI: z
-        .string()
-        .url()
-        .transform((url) => new URL(url))
+    KEYDB_URI: z.string().transform(toUrl)
 };
 
 export const s3Env = {
@@ -49,4 +48,10 @@ export const s3Env = {
     S3_ACCESS_KEY_ID: z.string(),
     S3_SECRET_ACCESS_KEY: z.string(),
     S3_BUCKET_NAME: z.string()
+};
+
+export const osuEnv = {
+    OSU_CLIENT_ID: z.string(),
+    OSU_CLIENT_SECRET: z.string(),
+    OSU_REDIRECT_URI: z.string().transform(toUrl)
 };

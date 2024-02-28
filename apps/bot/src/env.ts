@@ -1,8 +1,15 @@
 import { z } from 'zod';
-import { coreEnv, danserEnv, getEnv, keydbEnv, mongoEnv, s3Env } from '@bot/utils';
+import { coreEnv, osuEnv, danserEnv, getEnv, keydbEnv, mongoEnv, s3Env } from '@bot/utils';
 
 export const env = await getEnv(
-    z.object({}).extend(coreEnv).extend(danserEnv).extend(mongoEnv).extend(keydbEnv).extend(s3Env)
+    z
+        .object({})
+        .extend(coreEnv)
+        .extend(danserEnv)
+        .extend(mongoEnv)
+        .extend(keydbEnv)
+        .extend(s3Env)
+        .extend(osuEnv)
 );
 
 console.info('NODE_ENV =', env.NODE_ENV);

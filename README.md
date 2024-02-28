@@ -8,9 +8,9 @@ Its highlight feature is the ability to upload replay files and have the bot ren
 
 ## Features being worked on!
 
--   User profiles fetch
--   Upload replay files and have the bot render them as mp4 (very rough at the moment, but works!)
--   Generate a beatmap play report image using the replay file
+- User profiles fetch
+- Upload replay files and have the bot render them as mp4 (very rough at the moment, but works!)
+- Generate a beatmap play report image using the replay file
 
 Again, all WIP!
 
@@ -30,16 +30,22 @@ At some point I will configure Stripe to allow for donations to keep the bot run
 
 ## Technologies this bot uses (or will soon use)
 
--   TypeScript using an NX managed monorepo
--   Danser CLI for replay rendering (this bot will NOT use o!rdr, it will manage its own worker queue system for rendering replays)
--   Discord.js, with (bot sharding for large servers will be implemented in the future)
--   Fastify for the API server
--   MongoDB
--   KeyDB with BullMQ for queueing replay jobs for rendering
--   Docker
--   Kubernetes (not implemented, will be used in the future for deployment)
--   S3 for storing rendered replays and other user files
+- TypeScript using an NX managed monorepo
+- Danser CLI for replay rendering (this bot will NOT use o!rdr, it will manage its own worker queue system for rendering replays)
+- Discord.js, with (bot sharding for large servers will be implemented in the future)
+- Fastify for the API server
+- MongoDB
+- KeyDB with BullMQ for queueing replay jobs for rendering
+- Docker
+- Kubernetes (not implemented, will be used in the future for deployment)
+- S3 for storing rendered replays and other user files
 
 ## Installation
 
 Will be provided in the future.
+
+## Access to Osu API
+
+This bot has functionality for each user to authenticate using Osu! OAuth2 flow. This means the bot will use your API key to fetch beatmaps for rendering. The beatmap download does not require an API key, but the bot will need to use your API key to fetch the beatmap files for the render.
+
+Use /auth to get started. If you are running your own instance of this bot, you will need to use a public callback URL. For testing Ngrok is a great tool to use to test the bot OAuth2 flow.
