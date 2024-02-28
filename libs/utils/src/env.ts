@@ -23,15 +23,15 @@ function toUrl(strUrl: string): URL {
 // SCHEMAS
 
 export const coreEnv = {
-    DISCORD_TOKEN: z.string(),
+    DISCORD_TOKEN: z.string().min(1),
     NODE_ENV: z.enum(['development', 'production', 'test']),
-    CLIENT_ID: z.string(),
+    CLIENT_ID: z.string().min(1),
     GUILD_ID: z.string().optional()
 };
 
 export const danserEnv = {
-    DANSER_EXECUTABLE_PATH: z.string(),
-    DANSER_CONFIG_NAME: z.string()
+    DANSER_EXECUTABLE_PATH: z.string().min(1),
+    DANSER_CONFIG_NAME: z.string().min(1)
 };
 
 export const mongoEnv = {
@@ -43,15 +43,15 @@ export const keydbEnv = {
 };
 
 export const s3Env = {
-    S3_DOMAIN: z.string(),
-    S3_REGION: z.string(),
-    S3_ACCESS_KEY_ID: z.string(),
-    S3_SECRET_ACCESS_KEY: z.string(),
-    S3_BUCKET_NAME: z.string()
+    S3_DOMAIN: z.string().min(1),
+    S3_REGION: z.string().min(1),
+    S3_ACCESS_KEY_ID: z.string().min(1),
+    S3_SECRET_ACCESS_KEY: z.string().min(1),
+    S3_BUCKET_NAME: z.string().min(1)
 };
 
 export const osuEnv = {
-    OSU_CLIENT_ID: z.string(),
-    OSU_CLIENT_SECRET: z.string(),
+    OSU_CLIENT_ID: z.string().min(1),
+    OSU_CLIENT_SECRET: z.string().min(1),
     OSU_REDIRECT_URI: z.string().transform(toUrl)
 };
