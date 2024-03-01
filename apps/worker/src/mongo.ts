@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { env } from './env';
-import { schemas } from '@bot/db';
+import { dbSchemas } from '@bot/constants';
 
 await mongoose.connect(env.MONGO_URI.toString());
 
-export const storageModel = mongoose.model('storage', schemas.storageSchema);
+export const storageModel = mongoose.model('storage', dbSchemas.storageSchema);

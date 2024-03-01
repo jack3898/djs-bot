@@ -1,16 +1,17 @@
 import { z } from 'zod';
-import { coreEnv, osuEnv, danserEnv, getEnv, keydbEnv, mongoEnv, s3Env, jwtEnv } from '@bot/utils';
+import { getEnvBySchema } from '@bot/utils';
+import { zodSchemas } from '@bot/constants';
 
-export const env = await getEnv(
+export const env = await getEnvBySchema(
     z
         .object({})
-        .extend(jwtEnv)
-        .extend(coreEnv)
-        .extend(danserEnv)
-        .extend(mongoEnv)
-        .extend(keydbEnv)
-        .extend(s3Env)
-        .extend(osuEnv)
+        .extend(zodSchemas.env.jwtEnv)
+        .extend(zodSchemas.env.coreEnv)
+        .extend(zodSchemas.env.danserEnv)
+        .extend(zodSchemas.env.mongoEnv)
+        .extend(zodSchemas.env.keydbEnv)
+        .extend(zodSchemas.env.s3Env)
+        .extend(zodSchemas.env.osuEnv)
 );
 
 console.info('NODE_ENV =', env.NODE_ENV);

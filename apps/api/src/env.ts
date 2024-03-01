@@ -1,4 +1,11 @@
 import { z } from 'zod';
-import { getEnv, jwtEnv, mongoEnv, osuEnv } from '@bot/utils';
+import { getEnvBySchema } from '@bot/utils';
+import { zodSchemas } from '@bot/constants';
 
-export const env = await getEnv(z.object({}).extend(jwtEnv).extend(mongoEnv).extend(osuEnv));
+export const env = await getEnvBySchema(
+    z
+        .object({})
+        .extend(zodSchemas.env.jwtEnv)
+        .extend(zodSchemas.env.mongoEnv)
+        .extend(zodSchemas.env.osuEnv)
+);
