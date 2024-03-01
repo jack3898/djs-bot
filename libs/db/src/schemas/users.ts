@@ -43,3 +43,5 @@ export const usersSchema = new Schema(
         autoIndex: true
     }
 );
+
+usersSchema.index({ discordId: 1 }, { unique: true });
