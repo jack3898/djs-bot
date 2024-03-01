@@ -1,7 +1,7 @@
 import { type CommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { type Command } from 'types';
 import { recordReplayQueue } from 'queues';
-import { KEYS } from '@bot/queue';
+import { queue } from '@bot/constants';
 import { env } from 'env';
 
 export const render: Command = {
@@ -47,7 +47,7 @@ export const render: Command = {
 
         await interaction.reply('Queueing job to process replay...');
 
-        await recordReplayQueue.add(KEYS.RECORD, {
+        await recordReplayQueue.add(queue.QUEUE_KEYS.RECORD, {
             executable: env.DANSER_EXECUTABLE_PATH,
             replayDownloadUrl: replayUrl,
             friendlyName: String(replayFilename),

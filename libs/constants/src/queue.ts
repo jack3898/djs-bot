@@ -1,4 +1,4 @@
-export const KEYS = {
+export const QUEUE_KEYS = {
     RECORD: 'RECORD'
 } as const;
 
@@ -10,6 +10,6 @@ export type RecordJob = {
     danserOptions: (`--settings=${string}` | `--quickstart`)[];
 };
 
-export type KeyType = (typeof KEYS)[keyof typeof KEYS];
+export type KeyType = (typeof QUEUE_KEYS)[keyof typeof QUEUE_KEYS];
 
-export type KeysObject = typeof KEYS;
+export type KeysObject = typeof QUEUE_KEYS;
