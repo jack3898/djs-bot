@@ -8,7 +8,8 @@
     "start": "nx run-many --target=start --all",
     "dev": "nx run-many --target=dev --all --output-style=stream --parallel --max-parallel=10",
     "lint": "nx run-many --target=lint --all",
-    "postinstall": "nx run-many --target=build --all"
+    "postinstall": "nx run-many --target=build --all",
+    "test": "nx run-many --target=test --all"
   },
   "author": "Jack Wright <github@sec.jackwmail.com>",
   "keywords": [],
@@ -18,6 +19,7 @@
     "libs/*"
   ],
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.11.17",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
@@ -27,7 +29,8 @@
     "nx": "^18.0.4",
     "prettier": "^3.2.5",
     "tsx": "^4.7.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^1.3.1"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.515.0",
@@ -35,6 +38,7 @@
     "decompress": "^4.2.1",
     "discord.js": "^14.14.1",
     "fastify": "^4.26.1",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.1.2",
     "osr-loader": "^1.0.2",
     "redis": "^4.6.13",

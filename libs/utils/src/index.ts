@@ -4,3 +4,4 @@ export * from './fs';
 export * from './hash';
 export * from './storage';
 export * from './exec';
+export * from './jwt';

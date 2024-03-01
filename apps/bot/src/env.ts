@@ -1,9 +1,10 @@
 import { z } from 'zod';
-import { coreEnv, osuEnv, danserEnv, getEnv, keydbEnv, mongoEnv, s3Env } from '@bot/utils';
+import { coreEnv, osuEnv, danserEnv, getEnv, keydbEnv, mongoEnv, s3Env, jwtEnv } from '@bot/utils';
 
 export const env = await getEnv(
     z
         .object({})
+        .extend(jwtEnv)
         .extend(coreEnv)
         .extend(danserEnv)
         .extend(mongoEnv)

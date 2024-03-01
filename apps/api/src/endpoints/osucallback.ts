@@ -2,6 +2,7 @@ import { fastify } from 'server';
 import { z } from 'zod';
 import { env } from 'env';
 import { usersModel } from 'mongo';
+import { jwt } from 'jwt';
 
 const getParamsSchema = z.object({
     code: z.string(),
@@ -31,6 +32,8 @@ fastify.get('/osucallback', async (request, reply) => {
         return;
     }
 
+    // State is a JWT, it cannot be forged and contains the user's Discord ID
+    const state = await jwt.verify(getParams.data.state);
     const { code } = getParams.data;
 
     // get token from Osu! OAuth
@@ -60,15 +63,13 @@ fastify.get('/osucallback', async (request, reply) => {
         return;
     }
 
-    console.log('Osu! OAuth token:', accessTokenVerify.data);
-
     const existingUser = await usersModel.findOne({
-        discordId: getParams.data.state
+        discordId: state.discordId
     });
 
     const set = {
         authToken: accessTokenVerify.data.access_token,
-        discordId: getParams.data.state,
+        discordId: state.discordId,
         osuAuth: {
             accessToken: accessTokenVerify.data.access_token,
             refreshToken: accessTokenVerify.data.refresh_token,
@@ -78,7 +79,7 @@ fastify.get('/osucallback', async (request, reply) => {
     };
 
     if (existingUser) {
-        await usersModel.updateOne({ discordId: getParams.data.state }, { $set: set });
+        await usersModel.updateOne({ discordId: state.discordId }, { $set: set });
 
         await reply.send(
             'Authentication status updated! You can close this tab now and head back to Discord. 🥳'

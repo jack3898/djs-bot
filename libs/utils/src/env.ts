@@ -55,3 +55,7 @@ export const osuEnv = {
     OSU_CLIENT_SECRET: z.string().min(1),
     OSU_REDIRECT_URI: z.string().transform(toUrl)
 };
+
+export const jwtEnv = {
+    JWT_SECRET: z.string().min(36)
+};
