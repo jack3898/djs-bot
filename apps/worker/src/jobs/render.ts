@@ -73,8 +73,8 @@ export async function render(job: Bull.Job<queue.RecordJob>): Promise<void> {
 
         await downloadToDisk(new URL(`https://beatconnect.io/b/${id}/`), beatmapOszLocation);
 
-        const replayFileLocation = path.resolve(replaysTempDir, `${job.data.friendlyName}.osr`);
-        const replayVideoLocation = path.resolve(videosTempDir, `${job.data.friendlyName}.mp4`);
+        const replayFileLocation = path.resolve(replaysTempDir, `${beatmapChecksum}.osr`);
+        const replayVideoLocation = path.resolve(videosTempDir, `${beatmapChecksum}.mp4`);
 
         await writeFile(replayFileLocation, replayFile);
 
@@ -84,7 +84,7 @@ export async function render(job: Bull.Job<queue.RecordJob>): Promise<void> {
 
         await execute(env.DANSER_EXECUTABLE_PATH, [
             `--replay=${replayFileLocation}`,
-            `--out=${job.data.friendlyName}`,
+            `--out=${beatmapChecksum}`,
             ...job.data.danserOptions
         ]);
 
@@ -116,7 +116,7 @@ export async function render(job: Bull.Job<queue.RecordJob>): Promise<void> {
 
         await storageModel.create({
             url: fileDownloadUrl.toString(),
-            name: `${job.data.friendlyName}.mp4`,
+            name: `${parsedReplay.data.playerName} - ${beatmap.beatmapset.title_unicode} - ${parsedReplay.data.scoreId}.mp4`,
             type: 'mp4',
             size: videoFileSize,
             sha1Hash: videoHash,
