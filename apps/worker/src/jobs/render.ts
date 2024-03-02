@@ -6,7 +6,6 @@ import {
     download,
     execute,
     exists,
-    fromMonorepoRoot,
     getSizeBytes,
     makeDir,
     readFileAsStream,
@@ -16,6 +15,7 @@ import {
 import path from 'path';
 import { s3Storage } from 'storage';
 import { env } from 'env';
+import { DanserSettings } from 'utils';
 
 /**
  * Run the Danser executable with the given options to process a replay into a video.
@@ -30,8 +30,10 @@ export async function render(job: Bull.Job<queue.RecordJob>): Promise<void> {
             throw new Error(`Unable to download replay from Discord CDN.`);
         }
 
-        const replaysTempDir = fromMonorepoRoot('.data', 'replays');
-        const videosTempDir = fromMonorepoRoot('.data', 'videos');
+        const danserSettings = new DanserSettings();
+
+        const replaysTempDir = danserSettings.osuReplaysDir;
+        const videosTempDir = danserSettings.recordingOutputDir;
 
         const replaysTempDirExists = await exists(replaysTempDir);
         const videosTempDirExists = await exists(videosTempDir);
@@ -51,7 +53,9 @@ export async function render(job: Bull.Job<queue.RecordJob>): Promise<void> {
 
         job.updateProgress(10);
 
-        await execute(job.data.executable, [
+        await danserSettings.patch();
+
+        await execute(env.DANSER_EXECUTABLE_PATH, [
             `--replay=${replayFileLocation}`,
             `--out=${job.data.friendlyName}`,
             ...job.data.danserOptions

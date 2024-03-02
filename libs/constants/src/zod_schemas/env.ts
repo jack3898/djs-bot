@@ -13,7 +13,11 @@ export const coreEnv = {
 
 export const danserEnv = {
     DANSER_EXECUTABLE_PATH: z.string().min(1),
-    DANSER_CONFIG_NAME: z.string().min(1)
+    DANSER_ROOT_DIR: z.string().min(1),
+    DANSER_SONGS_DIR: z.string().min(1),
+    DANSER_REPLAYS_DIR: z.string().min(1),
+    DANSER_VIDEOS_DIR: z.string().min(1),
+    DANSER_SKINS_DIR: z.string().min(1)
 };
 
 export const mongoEnv = {

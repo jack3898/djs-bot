@@ -2,7 +2,6 @@ import { type CommandInteraction, SlashCommandBuilder, EmbedBuilder } from 'disc
 import { type Command } from 'types';
 import { recordReplayQueue, recordReplayQueueEvents } from 'queues';
 import { colours, queue } from '@bot/constants';
-import { env } from 'env';
 
 export const render: Command = {
     get name(): string {
@@ -46,11 +45,10 @@ export const render: Command = {
         }
 
         const job = await recordReplayQueue.add(queue.QUEUE_KEYS.RECORD, {
-            executable: env.DANSER_EXECUTABLE_PATH,
             replayDownloadUrl: replayUrl,
             friendlyName: String(replayFilename),
             discordUserId: interaction.user.id,
-            danserOptions: ['--quickstart', `--settings=${env.DANSER_CONFIG_NAME}`]
+            danserOptions: ['--quickstart', `--settings=default`]
         });
 
         const embed = new EmbedBuilder()

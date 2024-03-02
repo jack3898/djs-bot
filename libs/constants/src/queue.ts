@@ -3,7 +3,6 @@ export const QUEUE_KEYS = {
 } as const;
 
 export type RecordJob = {
-    executable: string;
     replayDownloadUrl: string;
     friendlyName: string;
     discordUserId: string;
