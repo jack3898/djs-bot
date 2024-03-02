@@ -41,6 +41,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.1.2",
     "osr-loader": "^1.0.2",
+    "osu-web.js": "^2.2.0",
     "redis": "^4.6.13",
     "zod": "^3.22.4"
   }

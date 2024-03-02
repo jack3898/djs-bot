@@ -5,6 +5,7 @@ import fs from 'fs';
 
 export const writeFile = promisify(fs.writeFile);
 export const deleteFile = promisify(fs.unlink);
+export const rm = promisify(fs.rm);
 export const readFile = promisify(fs.readFile);
 export const exists = promisify(fs.exists);
 export const makeDir = promisify(fs.mkdir);

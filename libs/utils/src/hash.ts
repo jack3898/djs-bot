@@ -1,25 +1,24 @@
 import { type ReadStream } from 'fs';
 import { createHash } from 'crypto';
 
-const algorithm = 'sha1';
+type Algorithm = 'sha1' | 'md5';
 
-export function sha1HashBuffer(file: Buffer): string {
-    const sha1hash = createHash(algorithm);
+export function hashBuffer(file: Buffer, algorithm: Algorithm = 'sha1'): string {
+    const hash = createHash(algorithm);
 
-    return sha1hash.update(file).digest('hex');
+    return hash.update(file).digest('hex');
 }
 
-export function sha1HashStream(file: ReadStream): Promise<string> {
-    const sha1hash = createHash(algorithm);
+export function hashStream(file: ReadStream, algorithm: Algorithm = 'sha1'): Promise<string> {
+    const hash = createHash(algorithm);
 
     return new Promise((resolve, reject) => {
-        sha1hash.setEncoding('hex');
-
-        file.pipe(sha1hash);
+        file.on('data', (chunk) => {
+            hash.update(chunk);
+        });
 
         file.on('end', () => {
-            sha1hash.end();
-            resolve(sha1hash.read());
+            resolve(hash.digest('hex'));
         });
 
         file.on('error', (err) => {
@@ -28,11 +27,11 @@ export function sha1HashStream(file: ReadStream): Promise<string> {
     });
 }
 
-export function sha1hash(file: ReadStream | Buffer): Promise<string> {
+export function hash(file: ReadStream | Buffer, algorithm: Algorithm = 'sha1'): Promise<string> {
     if (file instanceof Buffer) {
-        return Promise.resolve(sha1HashBuffer(file));
+        return Promise.resolve(hashBuffer(file, algorithm));
     }
 
     // File is a read stream, so we need to pipe it to the hash instead
-    return sha1HashStream(file);
+    return hashStream(file, algorithm);
 }

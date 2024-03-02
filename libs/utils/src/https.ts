@@ -1,4 +1,5 @@
 import https from 'https';
+import fs from 'fs';
 
 export async function download(url: URL): Promise<Buffer> {
     const chunks: Uint8Array[] = [];
@@ -15,6 +16,25 @@ export async function download(url: URL): Promise<Buffer> {
             });
 
             response.on('error', (error) => {
+                reject(error);
+            });
+        });
+    });
+}
+
+export async function downloadToDisk(url: URL, path: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const file = fs.createWriteStream(path);
+
+        https.get(url, (response) => {
+            response.pipe(file);
+
+            file.on('finish', () => {
+                file.close();
+                resolve();
+            });
+
+            file.on('error', (error) => {
                 reject(error);
             });
         });

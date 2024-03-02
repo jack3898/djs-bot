@@ -1,21 +1,23 @@
 import { type queue } from '@bot/constants';
 import type Bull from 'bullmq';
-import { storageModel } from 'mongo';
+import { storageModel, usersModel } from 'mongo';
 import {
-    deleteFile,
     download,
+    downloadToDisk,
     execute,
-    exists,
     getSizeBytes,
+    hash,
     makeDir,
     readFileAsStream,
-    sha1hash,
+    rm,
     writeFile
 } from '@bot/utils';
 import path from 'path';
 import { s3Storage } from 'storage';
 import { env } from 'env';
 import { DanserSettings } from 'utils';
+import { Replay } from 'osr-loader';
+import { Client as OsuApi } from 'osu-web.js';
 
 /**
  * Run the Danser executable with the given options to process a replay into a video.
@@ -30,21 +32,46 @@ export async function render(job: Bull.Job<queue.RecordJob>): Promise<void> {
             throw new Error(`Unable to download replay from Discord CDN.`);
         }
 
+        const user = await usersModel.findOne({ discordId: job.data.discordUserId });
+        const oauthToken = user?.osuAuth?.accessToken;
+
+        if (!oauthToken) {
+            throw new Error('User is not authenticated with the Osu! API.');
+        }
+
         const danserSettings = new DanserSettings();
 
         const replaysTempDir = danserSettings.osuReplaysDir;
         const videosTempDir = danserSettings.recordingOutputDir;
+        const songsTempDir = danserSettings.osuSongsDir;
 
-        const replaysTempDirExists = await exists(replaysTempDir);
-        const videosTempDirExists = await exists(videosTempDir);
+        // Restore dirs as empty
+        await makeDir(replaysTempDir, { recursive: true });
+        await makeDir(videosTempDir, { recursive: true });
+        await makeDir(songsTempDir, { recursive: true });
 
-        if (!replaysTempDirExists) {
-            await makeDir(replaysTempDir, { recursive: true });
+        // Download beatmap from a mirror
+        const osuApi = new OsuApi(oauthToken);
+        const parsedReplay = await new Replay().readBuffer(replayFile);
+        const beatmapChecksum = parsedReplay.data?.beatmapMD5;
+
+        if (!beatmapChecksum) {
+            throw new Error('Could not find beatmap checksum in the replay.');
         }
 
-        if (!videosTempDirExists) {
-            await makeDir(videosTempDir, { recursive: true });
+        const beatmap = await osuApi.beatmaps.lookupBeatmap({
+            query: { checksum: beatmapChecksum }
+        });
+
+        const id = beatmap?.beatmapset_id;
+
+        if (!id) {
+            throw new Error('Could not find beatmapset ID for the replay.');
         }
+
+        const beatmapOszLocation = path.resolve(songsTempDir, `${beatmapChecksum}.osz`);
+
+        await downloadToDisk(new URL(`https://beatconnect.io/b/${id}/`), beatmapOszLocation);
 
         const replayFileLocation = path.resolve(replaysTempDir, `${job.data.friendlyName}.osr`);
         const replayVideoLocation = path.resolve(videosTempDir, `${job.data.friendlyName}.mp4`);
@@ -65,7 +92,7 @@ export async function render(job: Bull.Job<queue.RecordJob>): Promise<void> {
 
         console.info('Finished rendering video! 📽️');
 
-        const videoHash = await sha1hash(readFileAsStream(replayVideoLocation));
+        const videoHash = await hash(readFileAsStream(replayVideoLocation), 'sha1');
         const s3Filename = `${videoHash}.mp4`;
         const videoFileSize = await getSizeBytes(replayVideoLocation);
 
@@ -81,8 +108,6 @@ export async function render(job: Bull.Job<queue.RecordJob>): Promise<void> {
 
         job.updateProgress(90);
 
-        await Promise.all([deleteFile(replayFileLocation), deleteFile(replayVideoLocation)]);
-
         const fileDownloadUrl = new URL(s3Storage.endpoint);
 
         fileDownloadUrl.pathname = `/${env.S3_BUCKET_NAME}/${s3Filename}`;
@@ -97,6 +122,10 @@ export async function render(job: Bull.Job<queue.RecordJob>): Promise<void> {
             sha1Hash: videoHash,
             discordOwnerId: job.data.discordUserId
         });
+
+        await rm(replaysTempDir, { recursive: true });
+        await rm(videosTempDir, { recursive: true });
+        await rm(songsTempDir, { recursive: true });
 
         job.updateProgress(100);
     } catch (error) {
