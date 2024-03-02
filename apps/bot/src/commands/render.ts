@@ -1,7 +1,7 @@
-import { type CommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { type CommandInteraction, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { type Command } from 'types';
-import { recordReplayQueue } from 'queues';
-import { queue } from '@bot/constants';
+import { recordReplayQueue, recordReplayQueueEvents } from 'queues';
+import { colours, queue } from '@bot/constants';
 import { env } from 'env';
 
 export const render: Command = {
@@ -45,9 +45,7 @@ export const render: Command = {
             return;
         }
 
-        await interaction.reply('Queueing job to process replay...');
-
-        await recordReplayQueue.add(queue.QUEUE_KEYS.RECORD, {
+        const job = await recordReplayQueue.add(queue.QUEUE_KEYS.RECORD, {
             executable: env.DANSER_EXECUTABLE_PATH,
             replayDownloadUrl: replayUrl,
             friendlyName: String(replayFilename),
@@ -55,9 +53,27 @@ export const render: Command = {
             danserOptions: ['--quickstart', `--settings=${env.DANSER_CONFIG_NAME}`]
         });
 
-        await interaction.editReply(
-            'Added to the queue! Use /replays to see it. It will not be available immediately.'
-        );
+        const embed = new EmbedBuilder()
+            .setTitle('🎥 Job started!')
+            .setDescription(
+                `Your request to render an Osu! replay has been acknowledged! It's in the pipeline, and I will let you know once it has finished.\n\nJob ID: \`${job.id}\``
+            )
+            .setColor(colours.pink)
+            .setFooter({
+                text: `Note: the time it takes to finish the replay is dependent on user traffic, replay size, video quality settings, worker availability among other things. Live updates are not yet available.`
+            });
+
+        await interaction.reply({ embeds: [embed] });
+
+        recordReplayQueueEvents.once('completed', async () => {
+            const embed = new EmbedBuilder()
+                .setTitle('🎥 completed')
+                .setDescription(
+                    `You requested an Osu! replay render, and the replay file is ready for download.\n\nJob ID: \`${job.id}\``
+                );
+
+            await interaction.user.send({ embeds: [embed] });
+        });
 
         return;
     }

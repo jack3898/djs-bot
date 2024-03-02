@@ -20,10 +20,9 @@ S3_SECRET_ACCESS_KEY=
 S3_BUCKET_NAME=
 
 # You will need to create your own osu! OAuth application at https://osu.ppy.sh/home/account/edit#oauth
-# For testing, as Osu! will need to access the callback URL, you can use Ngrok or a similar tool to test the bot OAuth2 flow.
 OSU_CLIENT_ID=
 OSU_CLIENT_SECRET=
 OSU_REDIRECT_URI=
 
-# Development purposes. You will need to use Ngrok to test the bot OAuth2 flow.
+# Development purposes. Helpful to test the bot OAuth2 flow with other services.
 NGROK_AUTHTOKEN=

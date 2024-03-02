@@ -1,1 +1,1 @@
-export * from './runDanser';
+export * from './render';

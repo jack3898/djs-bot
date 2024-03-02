@@ -1,14 +1,14 @@
 import { queue } from '@bot/constants';
 import { Worker } from 'bullmq';
 import { env } from 'env';
-import { runDanserJob } from 'jobs';
+import { render } from 'jobs';
 
 export const recordReplayQueueWorker = new Worker<queue.RecordJob>(
     queue.QUEUE_KEYS.RECORD,
     (job): Promise<void> => {
         console.log(`Processing job ${job.id}\nJob details: ${JSON.stringify(job.data, null, 2)}`);
 
-        return runDanserJob(job);
+        return render(job);
     },
     {
         connection: {

@@ -1,3 +1,4 @@
+import { osuReplayVideoFileLifecycleTimeSeconds } from '../common';
 import { Schema } from 'mongoose';
 
 const storageSchema = new Schema(
@@ -39,7 +40,10 @@ const storageSchema = new Schema(
     }
 );
 
-storageSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 60 * 10 });
+storageSchema.index(
+    { updatedAt: 1 },
+    { expireAfterSeconds: osuReplayVideoFileLifecycleTimeSeconds }
+);
 storageSchema.index({ sha1Hash: 1 }, { unique: true });
 storageSchema.index({ discordOwnerId: 1 });
 
