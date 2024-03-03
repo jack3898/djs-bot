@@ -9,6 +9,7 @@ import {
 import { type Command } from 'types/index.js';
 import { recordReplayQueue } from 'queues.js';
 import { colours, queue } from '@bot/constants';
+import { env } from 'env.js';
 
 export const render: Command = {
     get name(): string {
@@ -58,10 +59,14 @@ export const render: Command = {
             danserOptions: ['--quickstart', `--settings=default`]
         });
 
+        const jobUrl = new URL(env.SITE_URL);
+
+        jobUrl.pathname = `/jobs/${job.id}`;
+
         const viewJobButton = new ButtonBuilder()
             .setLabel('View render progress')
             .setStyle(ButtonStyle.Link)
-            .setURL('https://ohssbot.com/'); // TODO: Add job URL when site is live
+            .setURL(jobUrl.toString()); // TODO: Add job URL when site is live
 
         const embed = new EmbedBuilder()
             .setTitle('🎥 Job started!')

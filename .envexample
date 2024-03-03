@@ -36,3 +36,6 @@ S3_BUCKET_NAME=
 OSU_CLIENT_ID=
 OSU_CLIENT_SECRET=
 OSU_REDIRECT_URI=
+
+# Site options
+SITE_URL=http://localhost
