@@ -1,4 +1,5 @@
 import { fastify } from 'server.js';
+import 'trpc.js';
 import 'endpoints';
 import { env } from 'env.js';
 

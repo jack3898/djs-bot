@@ -15,7 +15,7 @@
   "keywords": [],
   "license": "GPL-3.0-only",
   "workspaces": [
-      "apps/*",
+    "apps/*",
     "libs/*"
   ],
   "devDependencies": {
@@ -45,6 +45,10 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.515.0",
     "@fastify/static": "^7.0.1",
+    "@trpc/client": "^10.45.1",
+    "@trpc/next": "^10.45.1",
+    "@trpc/react-query": "^10.45.1",
+    "@trpc/server": "^10.45.1",
     "bullmq": "^5.3.0",
     "discord.js": "^14.14.1",
     "fastify": "^4.26.1",
