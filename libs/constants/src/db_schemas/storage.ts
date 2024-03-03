@@ -1,4 +1,4 @@
-import { osuReplayVideoFileLifecycleTimeSeconds } from '../common';
+import { osuReplayVideoFileLifecycleTimeSeconds } from '../common.js';
 import { Schema } from 'mongoose';
 
 const storageSchema = new Schema(

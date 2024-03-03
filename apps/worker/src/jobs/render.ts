@@ -1,6 +1,6 @@
 import { type queue } from '@bot/constants';
 import type Bull from 'bullmq';
-import { storageModel, usersModel } from 'mongo';
+import { storageModel, usersModel } from 'mongo.js';
 import {
     download,
     downloadToDisk,
@@ -13,9 +13,9 @@ import {
     writeFile
 } from '@bot/utils';
 import path from 'path';
-import { s3Storage } from 'storage';
-import { env } from 'env';
-import { DanserSettings } from 'utils';
+import { s3Storage } from 'storage.js';
+import { env } from 'env.js';
+import { DanserSettings } from 'utils/index.js';
 import { Replay } from 'osr-loader';
 import { Client as OsuApi } from 'osu-web.js';
 

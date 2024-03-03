@@ -1,5 +1,5 @@
 import { Events } from 'discord.js';
-import { type BotEvent } from 'types';
+import { type BotEvent } from 'types/index.js';
 
 export const ready: BotEvent<Events.ClientReady> = {
     eventName: Events.ClientReady,

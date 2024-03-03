@@ -1,1 +1,1 @@
-export { isExtendedBot } from './isExtendedBot';
+export { isExtendedBot } from './isExtendedBot.js';

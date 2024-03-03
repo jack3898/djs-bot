@@ -1,5 +1,5 @@
 import { queue } from '@bot/constants';
-import { env } from './env';
+import { env } from './env.js';
 import { Queue } from 'bullmq';
 
 const connection = {

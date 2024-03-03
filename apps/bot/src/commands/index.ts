@@ -1,3 +1,3 @@
-export { render } from './render';
-export { replays } from './replays';
-export { auth } from './auth';
+export { render } from './render.js';
+export { replays } from './replays.js';
+export { auth } from './auth.js';

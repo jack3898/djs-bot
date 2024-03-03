@@ -8,7 +8,8 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "type-check": "tsc --noEmit"
   },
   "author": "Jack Wright <github@sec.jackwmail.com>",
   "license": "GPL-3.0-only"

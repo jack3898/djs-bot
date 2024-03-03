@@ -5,9 +5,9 @@ import {
     ButtonStyle,
     ActionRowBuilder
 } from 'discord.js';
-import { type Command } from 'types';
-import { env } from 'env';
-import { jwt } from 'jwt';
+import { type Command } from 'types/index.js';
+import { env } from 'env.js';
+import { jwt } from 'jwt.js';
 
 export const auth: Command = {
     get name(): string {

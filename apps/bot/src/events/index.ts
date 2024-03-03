@@ -1,2 +1,2 @@
-export { ready } from './ready';
-export { interactionCreate } from './interactionCreate';
+export { ready } from './ready.js';
+export { interactionCreate } from './interactionCreate.js';

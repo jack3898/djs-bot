@@ -1,5 +1,5 @@
 {
-  "name": "@bot/web",
+  "name": "@bot/api",
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -8,7 +8,8 @@
     "dev": "tsx watch src/index.ts --env-file .env",
     "build": "tsc",
     "start": "node dist/index.js --env-file .env",
-    "lint": "eslint"
+    "lint": "eslint",
+    "type-check": "tsc --noEmit"
   },
   "author": "Jack Wright <github@sec.jackwmail.com>",
   "license": "GPL-3.0-only"

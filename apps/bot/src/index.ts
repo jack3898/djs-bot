@@ -1,8 +1,8 @@
 import { Events, GatewayIntentBits } from 'discord.js';
-import * as commands from './commands';
-import * as events from './events';
-import { Client } from 'client';
-import { env } from 'env';
+import * as commands from './commands/index.js';
+import * as events from './events/index.js';
+import { Client } from 'client.js';
+import { env } from 'env.js';
 
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent]

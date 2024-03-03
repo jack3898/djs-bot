@@ -1,2 +1,2 @@
-export { Command } from './Command';
-export { BotEvent } from './BotEvent';
+export { Command } from './Command.js';
+export { BotEvent } from './BotEvent.js';

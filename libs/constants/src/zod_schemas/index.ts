@@ -1,2 +1,2 @@
-export * as jwt from './jwt';
-export * as env from './env';
+export * as jwt from './jwt.js';
+export * as env from './env.js';

@@ -1,6 +1,6 @@
 import { danser } from '@bot/constants';
 import { exists, makeDir, writeFile } from '@bot/utils';
-import { env } from 'env';
+import { env } from 'env.js';
 import path from 'path';
 
 /**

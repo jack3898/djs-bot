@@ -1,7 +1,7 @@
 import { queue } from '@bot/constants';
 import { Worker } from 'bullmq';
-import { env } from 'env';
-import { render } from 'jobs';
+import { env } from 'env.js';
+import { render } from 'jobs/index.js';
 
 export const recordReplayQueueWorker = new Worker<queue.RecordJob>(
     queue.QUEUE_KEYS.RECORD,

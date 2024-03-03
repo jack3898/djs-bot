@@ -1,1 +1,1 @@
-export * from './danserSettings';
+export * from './danserSettings.js';

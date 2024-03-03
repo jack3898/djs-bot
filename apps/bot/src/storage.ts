@@ -1,4 +1,4 @@
-import { env } from './env';
+import { env } from './env.js';
 import { S3Storage } from '@bot/utils';
 
 export const s3Storage = new S3Storage({

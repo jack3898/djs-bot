@@ -6,8 +6,8 @@ import {
     ButtonStyle,
     ActionRowBuilder
 } from 'discord.js';
-import { type Command } from 'types';
-import { recordReplayQueue } from 'queues';
+import { type Command } from 'types/index.js';
+import { recordReplayQueue } from 'queues.js';
 import { colours, queue } from '@bot/constants';
 
 export const render: Command = {

@@ -1,1 +1,1 @@
-import 'queues';
+import 'queues.js';

@@ -1,6 +1,6 @@
 import { type ClientOptions, Client as DiscordClient, Collection, REST, Routes } from 'discord.js';
-import { env } from 'env';
-import { type Command } from 'types';
+import { env } from 'env.js';
+import { type Command } from 'types/index.js';
 
 export class Client extends DiscordClient {
     constructor(options: ClientOptions) {

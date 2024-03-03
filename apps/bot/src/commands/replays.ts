@@ -1,6 +1,6 @@
 import { type CommandInteraction, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
-import { storageModel } from 'mongo';
-import { type Command } from 'types';
+import { storageModel } from 'mongo.js';
+import { type Command } from 'types/index.js';
 
 export const replays: Command = {
     get name(): string {

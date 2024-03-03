@@ -1,8 +1,8 @@
-import { fastify } from 'server';
+import { fastify } from 'server.js';
 import { z } from 'zod';
-import { env } from 'env';
-import { usersModel } from 'mongo';
-import { jwt } from 'jwt';
+import { env } from 'env.js';
+import { usersModel } from 'mongo.js';
+import { jwt } from 'jwt.js';
 
 const getParamsSchema = z.object({
     code: z.string(),

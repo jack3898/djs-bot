@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.build.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "jsx": "react-jsx",
+    "module": "NodeNext",
+    "target": "ESNext"
+  },
+  "exclude": ["dist", "vite.config.ts"]
+}

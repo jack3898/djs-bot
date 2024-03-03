@@ -1,4 +1,4 @@
-import { JWT, JWTError } from './jwt';
+import { JWT, JWTError } from './jwt.js';
 import { expect, it } from 'vitest';
 import { z } from 'zod';
 import jwt from 'jsonwebtoken';

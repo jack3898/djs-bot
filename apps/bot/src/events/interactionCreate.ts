@@ -1,6 +1,6 @@
 import { Events } from 'discord.js';
-import { isExtendedBot } from 'guards';
-import { type BotEvent } from 'types';
+import { isExtendedBot } from 'guards/index.js';
+import { type BotEvent } from 'types/index.js';
 
 export const interactionCreate: BotEvent<Events.InteractionCreate> = {
     eventName: Events.InteractionCreate,

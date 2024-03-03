@@ -1,4 +1,4 @@
-import { fastify } from 'server';
+import { fastify } from 'server.js';
 import 'endpoints';
 
 fastify.listen({ port: 80 }, (err, address) => {
