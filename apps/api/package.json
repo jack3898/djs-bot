@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "devDependencies": {},
   "scripts": {
     "dev": "tsx watch src/index.ts --env-file .env",
     "build": "tsc",
