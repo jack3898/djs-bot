@@ -18,16 +18,16 @@ export function JobStatus(): JSX.Element {
         return () => clearInterval(interval);
     }, [data]);
 
-    const bgColour = useMemo(() => {
+    const borderColour = useMemo(() => {
         switch (data.data?.status) {
             case 'completed':
-                return 'bg-green-200';
+                return 'border-emerald-200';
             case 'active':
-                return 'bg-blue-200';
+                return 'border-blue-200';
             case 'waiting':
-                return 'bg-yellow-200';
+                return 'border-yellow-200';
             case 'failed':
-                return 'bg-red-200';
+                return 'border-red-200';
             default:
                 return '';
         }
@@ -42,10 +42,14 @@ export function JobStatus(): JSX.Element {
     }
 
     return (
-        <div className={`max-w-xl mx-auto rounded border p-4 mt-32 shadow ${bgColour}`}>
-            <h1 className="text-xl pb-4">{`Job Status (#${id})`}</h1>
-            <p>Percent: {data.data?.progress}</p>
-            <p>Status: {data.data?.status.toLocaleUpperCase()}</p>
+        <div className="h-screen flex justify-center items-center bg-slate-100">
+            <div
+                className={`min-w-[32rem] text-center rounded border-4 p-4 shadow-xl ${borderColour} bg-white`}
+            >
+                <h1 className="text-xl pb-4">{`Job Status (#${id})`}</h1>
+                <p>Percent: {data.data?.progress}</p>
+                <p>Status: {data.data?.status.toLocaleUpperCase()}</p>
+            </div>
         </div>
     );
 }
