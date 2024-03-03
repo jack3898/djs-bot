@@ -1,33 +1,38 @@
+NODE_ENV=development # Must be either "development", "production" or "test", really it should either be "development" or "production" for this project.
+JWT_SECRET= # Must be at least 36 characters long. Conveniently, the length of a UUID! But you can go longer if you want a more secure secret. 👀
+
+# You will need to create your own Discord bot at https://discord.com/developers/applications
+# Then once you have filled the necessary fields, invite it to your server. There are plenty of guides online on how to do this.
 DISCORD_TOKEN=
-NODE_ENV=production
 CLIENT_ID=
 GUILD_ID=
-JWT_SECRET=
 
-# Absolute paths! No relative paths!
-DANSER_EXECUTABLE_PATH=dir/to/danser-cli.exe (or other OS equivalent)
-DANSER_ROOT_DIR=
+# A lot of the paths are used by the worker for temporary object storage.
+# Must be absolute paths only for all fields.
+DANSER_EXECUTABLE_PATH= # must include danser-cli executable
+DANSER_ROOT_DIR= # Only the danser root directory, not the executable
 DANSER_SONGS_DIR=
 DANSER_REPLAYS_DIR=
 DANSER_VIDEOS_DIR=
 DANSER_SKINS_DIR=
 
+# This matches the docker-compose.yml configuration. If you change this, you will need to change the worker's configuration as well.
 MONGO_INITDB_ROOT_USERNAME=root
 MONGO_INITDB_ROOT_PASSWORD=changeme
 MONGO_URI=mongodb://root:changeme@localhost:27017/
 
+# This matches the docker-compose.yml configuration. If you change this, you will need to change the worker's configuration as well.
 KEYDB_URI=redis://localhost:6379
 
+# You may use any S3 compliant storage service. The worker uses this to store files (like rendered videos).
 S3_DOMAIN=
 S3_REGION=
 S3_ACCESS_KEY_ID=
 S3_SECRET_ACCESS_KEY=
 S3_BUCKET_NAME=
 
-# You will need to create your own osu! OAuth application at https://osu.ppy.sh/home/account/edit#oauth
+# You will need to create your own Osu! OAuth application at https://osu.ppy.sh/home/account/edit#oauth
+# This is used to contact the Osu! API for Osu! related information like beatmaps.
 OSU_CLIENT_ID=
 OSU_CLIENT_SECRET=
 OSU_REDIRECT_URI=
-
-# Development purposes. Helpful to test the bot OAuth2 flow with other services.
-NGROK_AUTHTOKEN=

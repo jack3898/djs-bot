@@ -5,8 +5,15 @@ function toUrl(strUrl: string): URL {
 }
 
 export const coreEnv = {
+    NODE_ENV: z.enum(['development', 'production', 'test'])
+};
+
+export const jwtEnv = {
+    JWT_SECRET: z.string().min(36)
+};
+
+export const discordEnv = {
     DISCORD_TOKEN: z.string().min(1),
-    NODE_ENV: z.enum(['development', 'production', 'test']),
     CLIENT_ID: z.string().min(1),
     GUILD_ID: z.string().optional()
 };
@@ -40,8 +47,4 @@ export const osuEnv = {
     OSU_CLIENT_ID: z.string().min(1),
     OSU_CLIENT_SECRET: z.string().min(1),
     OSU_REDIRECT_URI: z.string().transform(toUrl)
-};
-
-export const jwtEnv = {
-    JWT_SECRET: z.string().min(36)
 };

@@ -8,7 +8,6 @@
     "start": "nx run-many --target=start --all",
     "dev": "nx run-many --target=dev --all --output-style=stream --parallel --max-parallel=10",
     "lint": "nx run-many --target=lint --all",
-    "postinstall": "nx run-many --target=build --all",
     "test": "nx run-many --target=test --all"
   },
   "author": "Jack Wright <github@sec.jackwmail.com>",
@@ -35,7 +34,6 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.515.0",
     "bullmq": "^5.3.0",
-    "decompress": "^4.2.1",
     "discord.js": "^14.14.1",
     "fastify": "^4.26.1",
     "jsonwebtoken": "^9.0.2",
