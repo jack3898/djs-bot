@@ -2,7 +2,7 @@
 
 > "It's pronounced 'ohss' not 'oh-su'!!" - Some Osu! person, probably.
 
-_NOTE: This bot is still in development and is not yet ready for use._
+_NOTE: This bot is still in development and is not yet ready for use. It's being developed by a single person, and the scope is huge! So it may take a while!_
 
 An open-source Discord bot that provides Osu! related commands and features.
 
@@ -40,7 +40,7 @@ I like to be transparent about the technologies I use so you know what you're ge
 - TypeScript using an NX managed monorepo
 - Danser CLI for replay rendering
 - Discord.js, with (bot sharding for large servers will be implemented in the future)
-- Fastify for the REST API server
+- Fastify for the REST API server and to serve static website assets
 - React and Tailwind for the website
 - MongoDB for general DB storage
 - KeyDB with BullMQ for queueing replay jobs for rendering
