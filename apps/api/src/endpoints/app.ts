@@ -1,5 +1,12 @@
 import { fastify } from 'server.js';
+import { fromMonorepoRoot } from '@bot/utils';
+import fastifyStatic from '@fastify/static';
 
-fastify.get('/app*', () => {
-    return { message: 'This route is not yet active.' };
+await fastify.register(fastifyStatic, {
+    root: fromMonorepoRoot('apps', 'client', 'dist'),
+    prefix: '/'
+});
+
+fastify.setNotFoundHandler((request, reply) => {
+    reply.sendFile('index.html');
 });
