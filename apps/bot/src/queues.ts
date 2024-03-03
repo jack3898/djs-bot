@@ -1,6 +1,6 @@
 import { queue } from '@bot/constants';
 import { env } from './env';
-import { Queue, QueueEvents } from 'bullmq';
+import { Queue } from 'bullmq';
 
 const connection = {
     host: env.KEYDB_URI.hostname,
@@ -14,5 +14,3 @@ const connection = {
 export const recordReplayQueue = new Queue<queue.RecordJob>(queue.QUEUE_KEYS.RECORD, {
     connection
 });
-
-export const recordReplayQueueEvents = new QueueEvents(queue.QUEUE_KEYS.RECORD, { connection });

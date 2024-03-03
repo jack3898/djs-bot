@@ -1,6 +1,13 @@
-import { type CommandInteraction, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import {
+    type CommandInteraction,
+    SlashCommandBuilder,
+    EmbedBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    ActionRowBuilder
+} from 'discord.js';
 import { type Command } from 'types';
-import { recordReplayQueue, recordReplayQueueEvents } from 'queues';
+import { recordReplayQueue } from 'queues';
 import { colours, queue } from '@bot/constants';
 
 export const render: Command = {
@@ -51,26 +58,30 @@ export const render: Command = {
             danserOptions: ['--quickstart', `--settings=default`]
         });
 
+        const viewJobButton = new ButtonBuilder()
+            .setLabel('View render progress')
+            .setStyle(ButtonStyle.Link)
+            .setURL('https://ohssbot.com/'); // TODO: Add job URL when site is live
+
         const embed = new EmbedBuilder()
             .setTitle('🎥 Job started!')
             .setDescription(
-                `Your request to render an Osu! replay has been acknowledged! It's in the pipeline, and I will let you know once it has finished.\n\nJob ID: \`${job.id}\``
+                [
+                    `Your request to render an Osu! replay has been acknowledged! It's in the pipeline. 😎🚀`,
+                    `**Job ID**: \`${job.id}\``
+                ].join('\n\n')
             )
             .setColor(colours.pink)
             .setFooter({
-                text: `Note: the time it takes to finish the replay is dependent on user traffic, replay size, video quality settings, worker availability among other things. Live updates are not yet available.`
+                text: `Note: the time it takes to finish the replay is dependent on user traffic, replay size, video quality settings, worker availability among other things. Please be patient!`
             });
 
-        await interaction.reply({ embeds: [embed] });
+        const actionRow = new ActionRowBuilder().addComponents(viewJobButton);
 
-        recordReplayQueueEvents.once('completed', async () => {
-            const embed = new EmbedBuilder()
-                .setTitle('🎥 completed')
-                .setDescription(
-                    `You requested an Osu! replay render, and the replay file is ready for download.\n\nJob ID: \`${job.id}\``
-                );
-
-            await interaction.user.send({ embeds: [embed] });
+        await interaction.reply({
+            embeds: [embed],
+            // @ts-expect-error - This is a valid interaction reply, but discord.js types are complaining.
+            components: [actionRow]
         });
 
         return;
