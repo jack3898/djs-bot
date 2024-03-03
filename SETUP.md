@@ -13,7 +13,7 @@ Familiarity with monorepo projects, Docker, TypeScript and Node.js is recommende
 In order for this bot to run locally, you will need to have the following software installed:
 
 - Git (a given)
-- Node.js v20 or later with npm version 9 or later
+- Node.js v20 or later with npm version 10 or later
 - Docker and Docker Compose (for local database and keydb services)
 - (optional) Ngrok for OAuth2 callback URL testing. If you are not using Ngrok, you may be able to use something else
 - And all the other tools you probably already have installed!
