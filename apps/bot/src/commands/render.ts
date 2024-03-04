@@ -12,6 +12,8 @@ import { colours, queue, common } from '@bot/constants';
 import { env } from 'env.js';
 import { storageModel } from 'mongo.js';
 import { Bytes } from '@bot/utils';
+import { isOsuAuthenticated } from 'guards/index.js';
+import { createLoginWithOsuButton } from 'components/index.js';
 
 export const render: Command = {
     get name(): string {
@@ -33,6 +35,22 @@ export const render: Command = {
         const replayUrl = replay?.attachment?.url;
         const replayFilename = replay?.attachment?.name;
         const replayFileSize = new Bytes(replay?.attachment?.size ?? 0);
+
+        const osuAuthenticated = await isOsuAuthenticated(interaction);
+
+        if (!osuAuthenticated) {
+            const authButton = await createLoginWithOsuButton(interaction.user.id);
+            const actionRow = new ActionRowBuilder().addComponents(authButton);
+
+            await interaction.reply({
+                content: 'You are not authenticated. Click the button to link your Osu! account.',
+                // @ts-expect-error - This is a valid interaction reply, but discord.js types are complaining.
+                components: [actionRow],
+                ephemeral: true
+            });
+
+            return;
+        }
 
         if (!replayUrl) {
             await interaction.reply({

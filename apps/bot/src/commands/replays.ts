@@ -1,4 +1,11 @@
-import { type CommandInteraction, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import { createLoginWithOsuButton } from 'components/index.js';
+import {
+    type CommandInteraction,
+    SlashCommandBuilder,
+    EmbedBuilder,
+    ActionRowBuilder
+} from 'discord.js';
+import { isOsuAuthenticated } from 'guards/index.js';
 import { storageModel } from 'mongo.js';
 import { type Command } from 'types/index.js';
 
@@ -10,6 +17,22 @@ export const replays: Command = {
         .setName('replays')
         .setDescription('Get your replays and their download URLs.'),
     async execute(interaction: CommandInteraction): Promise<void> {
+        const osuAuthenticated = await isOsuAuthenticated(interaction);
+
+        if (!osuAuthenticated) {
+            const authButton = await createLoginWithOsuButton(interaction.user.id);
+            const actionRow = new ActionRowBuilder().addComponents(authButton);
+
+            await interaction.reply({
+                content: 'You are not authenticated. Click the button to link your Osu! account.',
+                // @ts-expect-error - This is a valid interaction reply, but discord.js types are complaining.
+                components: [actionRow],
+                ephemeral: true
+            });
+
+            return;
+        }
+
         const replays = await storageModel
             .find({ discordOwnerId: interaction.user.id, type: 'mp4' })
             .limit(10)
