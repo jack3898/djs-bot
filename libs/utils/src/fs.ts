@@ -2,6 +2,7 @@ import { fileURLToPath } from 'url';
 import path, { dirname } from 'path';
 import { promisify } from 'util';
 import fs from 'fs';
+import { Bytes } from './fileSize.js';
 
 export const writeFile = promisify(fs.writeFile);
 export const deleteFile = promisify(fs.unlink);
@@ -25,12 +26,12 @@ export function fromMonorepoRoot(...repo_path: string[]): string {
 /**
  * Get the size of a file in bytes using a file path.
  */
-export async function getSizeBytes(filePath: string): Promise<number | null> {
+export async function getSizeBytes(filePath: string): Promise<Bytes | null> {
     const fileExists = await exists(filePath);
 
     if (!fileExists) {
         return null;
     }
 
-    return stat(filePath).then((stats) => stats.size);
+    return stat(filePath).then((stats) => new Bytes(stats.size));
 }

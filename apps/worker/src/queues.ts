@@ -1,12 +1,24 @@
-import { queue } from '@bot/constants';
+import { queue, common } from '@bot/constants';
 import { Worker } from 'bullmq';
 import { env } from 'env.js';
 import { render } from 'jobs/index.js';
+import { storageModel } from 'mongo.js';
 
 export const recordReplayQueueWorker = new Worker<queue.RecordJob>(
     queue.QUEUE_KEYS.RECORD,
-    (job): Promise<void> => {
+    async (job): Promise<void> => {
         console.log(`Processing job ${job.id}\nJob details: ${JSON.stringify(job.data, null, 2)}`);
+
+        const replayCountForUser = await storageModel.countDocuments({
+            discordOwnerId: job.data.discordUserId,
+            type: 'mp4'
+        });
+
+        if (replayCountForUser >= common.storageLimits.quantityByTier.free) {
+            throw new Error(
+                `User ${job.data.discordUserId} has reached their maximum replay limit.`
+            );
+        }
 
         return render(job);
     },

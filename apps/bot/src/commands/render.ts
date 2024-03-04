@@ -8,8 +8,10 @@ import {
 } from 'discord.js';
 import { type Command } from 'types/index.js';
 import { recordReplayQueue } from 'queues.js';
-import { colours, queue } from '@bot/constants';
+import { colours, queue, common } from '@bot/constants';
 import { env } from 'env.js';
+import { storageModel } from 'mongo.js';
+import { Bytes } from '@bot/utils';
 
 export const render: Command = {
     get name(): string {
@@ -30,10 +32,10 @@ export const render: Command = {
         const replay = interaction.options.get('replay');
         const replayUrl = replay?.attachment?.url;
         const replayFilename = replay?.attachment?.name;
-        const fileSize = replay?.attachment?.size ?? 0;
+        const replayFileSize = new Bytes(replay?.attachment?.size ?? 0);
 
         if (!replayUrl) {
-            interaction.reply({
+            await interaction.reply({
                 content: 'No replay file was provided.',
                 ephemeral: true
             });
@@ -41,11 +43,26 @@ export const render: Command = {
             return;
         }
 
-        const tenMB = 1024 * 1024 * 10;
+        const replayCountForUser = await storageModel.countDocuments({
+            discordOwnerId: interaction.user.id,
+            type: 'mp4'
+        });
 
-        if (fileSize > tenMB) {
+        if (replayCountForUser >= common.storageLimits.quantityByTier.free) {
             await interaction.reply({
-                content: 'Replay file is too large. Expected less than 10MB.',
+                content:
+                    'You have reached your maximum replay limit! Please delete some replays before rendering a new one.',
+                ephemeral: true
+            });
+
+            return;
+        }
+
+        const storageLimitFileSize = common.storageLimits.replayFilesizeByTier.free;
+
+        if (replayFileSize.B > storageLimitFileSize.B) {
+            await interaction.reply({
+                content: `Replay file is too large. Expected less than ${storageLimitFileSize.kBFriendly}.`,
                 ephemeral: true
             });
 
@@ -72,7 +89,7 @@ export const render: Command = {
             .setTitle('🎥 Job started!')
             .setDescription(
                 [
-                    `Your request to render an Osu! replay has been acknowledged! It's in the pipeline. 😎🚀`,
+                    `Your request to render an Osu! replay has been acknowledged! It's in the pipeline. 🚀`,
                     `**Job ID**: \`${job.id}\``
                 ].join('\n\n')
             )

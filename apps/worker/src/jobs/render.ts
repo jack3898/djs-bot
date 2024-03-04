@@ -96,6 +96,16 @@ export async function render(job: Bull.Job<queue.RecordJob>): Promise<void> {
         const s3Filename = `${videoHash}.mp4`;
         const videoFileSize = await getSizeBytes(replayVideoLocation);
 
+        if (!videoFileSize) {
+            throw new Error('Could not find the video file after rendering.');
+        }
+
+        if (videoFileSize.gB > 10) {
+            throw new Error(
+                `Unexpectedly large file size. Aborting the upload. Expected less than ${videoFileSize.gBFriendly}`
+            );
+        }
+
         console.info(`Uploading ${replayVideoLocation} as ${s3Filename} to object storage...`);
 
         await s3Storage.upload({
@@ -118,7 +128,7 @@ export async function render(job: Bull.Job<queue.RecordJob>): Promise<void> {
             url: fileDownloadUrl.toString(),
             name: `${parsedReplay.data.playerName} - ${beatmap.beatmapset.title_unicode} - ${parsedReplay.data.scoreId}.mp4`,
             type: 'mp4',
-            size: videoFileSize,
+            size: videoFileSize.B,
             sha1Hash: videoHash,
             discordOwnerId: job.data.discordUserId
         });
