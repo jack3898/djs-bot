@@ -4,13 +4,21 @@
   "description": "The frontend web app!",
   "main": "index.js",
   "type": "module",
-  "devDependencies": {},
   "scripts": {
     "dev": "vite build --mode development --watch",
     "build": "vite build --mode production",
     "lint": "eslint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "shadcn-ui": "shadcn-ui"
   },
   "author": "Jack Wright <github@sec.jackwmail.com>",
-  "license": "GPL-3.0-only"
+  "license": "GPL-3.0-only",
+  "dependencies": {
+    "@radix-ui/react-checkbox": "^1.0.4",
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-progress": "^1.0.3",
+    "@radix-ui/react-separator": "^1.0.3",
+    "@radix-ui/react-slot": "^1.0.2",
+    "lucide-react": "^0.348.0"
+  }
 }

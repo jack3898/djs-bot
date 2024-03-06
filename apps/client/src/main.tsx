@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { App, JobStatus } from './pages/index.js';
 import { StrictMode } from 'react';
-import { trpc } from './context/index.js';
+import { TrpcProvider, ThemeProvider } from './context/index.js';
 
 const root = document.getElementById('root');
 
@@ -20,9 +20,11 @@ const router = createBrowserRouter([
 if (root !== null) {
     createRoot(root).render(
         <StrictMode>
-            <trpc.TrpcProvider>
-                <RouterProvider router={router} />
-            </trpc.TrpcProvider>
+            <ThemeProvider>
+                <TrpcProvider>
+                    <RouterProvider router={router} />
+                </TrpcProvider>
+            </ThemeProvider>
         </StrictMode>
     );
 }

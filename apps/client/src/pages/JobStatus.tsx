@@ -1,55 +1,88 @@
 import { useParams } from 'react-router-dom';
 import { trpcReact } from '../trpcReact.js';
-import { useEffect, useMemo } from 'react';
+import {
+    Card,
+    CardHeader,
+    CardContent,
+    CardTitle,
+    Badge,
+    ModeToggle,
+    Progress,
+    Separator
+} from '@/components/ui/index.js';
+
+function JobCardContent({
+    data,
+    error,
+    loading
+}: {
+    data?: { status: string; progress: string };
+    error: boolean;
+    loading: boolean;
+}): JSX.Element {
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+
+    if (data) {
+        return (
+            <>
+                <p className="flex justify-between">
+                    <em>{data.status.toLocaleUpperCase()}</em>
+                    <strong>{data.progress}%</strong>
+                </p>
+                <Progress value={+data.progress} />
+            </>
+        );
+    }
+
+    if (error) {
+        return (
+            <>
+                <p>Hmmm, there was a problem loading this job.</p>
+                <p>It might have been deleted, never existed, or there was a problem!</p>
+                <p>🤔</p>
+            </>
+        );
+    }
+
+    return <></>;
+}
 
 export function JobStatus(): JSX.Element {
     const { id } = useParams();
-    const data = trpcReact.queue.useQuery({ jobId: String(id) });
+    const data = trpcReact.queue.useQuery(
+        { jobId: String(id) },
+        {
+            refetchInterval(data) {
+                if (data?.status === 'waiting' || data?.status === 'active') {
+                    return 5_000;
+                }
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            data.refetch();
-
-            if (data.data?.status === 'completed') {
-                clearInterval(interval);
-            }
-        }, 5_000);
-
-        return () => clearInterval(interval);
-    }, [data]);
-
-    const borderColour = useMemo(() => {
-        switch (data.data?.status) {
-            case 'completed':
-                return 'border-emerald-200';
-            case 'active':
-                return 'border-blue-200';
-            case 'waiting':
-                return 'border-yellow-200';
-            case 'failed':
-                return 'border-red-200';
-            default:
-                return '';
+                return false;
+            },
+            retry: 0
         }
-    }, [data.data?.status]);
-
-    if (!data.data) {
-        return <div>No job found! 😭</div>;
-    }
-
-    if (data.error) {
-        return <div>Error: {data.error.message}</div>;
-    }
+    );
 
     return (
-        <div className="h-screen flex justify-center items-center bg-slate-100">
-            <div
-                className={`min-w-[32rem] text-center rounded border-4 p-4 shadow-xl ${borderColour} bg-white`}
-            >
-                <h1 className="text-xl pb-4">{`Job Status (#${id})`}</h1>
-                <p>Render percent: {data.data?.progress}</p>
-                <p>Status: {data.data?.status.toLocaleUpperCase()}</p>
-            </div>
-        </div>
+        <>
+            <Card className="max-w-96 mx-auto mt-8">
+                <CardHeader>
+                    <CardTitle>
+                        Job progress <Badge>#{id}</Badge>
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <JobCardContent
+                        data={data?.data}
+                        error={data.isError}
+                        loading={data.isLoading}
+                    />
+                    <Separator className="my-4" />
+                    <ModeToggle />
+                </CardContent>
+            </Card>
+        </>
     );
 }
