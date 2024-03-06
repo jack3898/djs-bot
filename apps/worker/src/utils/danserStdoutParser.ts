@@ -76,7 +76,7 @@ function parseProgressString(string: string): z.infer<typeof progressSchema> {
 
     return progressSchema.parse({
         type: 'PROGRESS',
-        date: dateStrSlice,
+        date: dateStrSlice ?? new Date(),
         percentage: progressPercentStrSlice,
         speedMultiplier: speedMultiplierStrSlice,
         eta: etaStrSlice?.trim() ?? null

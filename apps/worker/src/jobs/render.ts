@@ -4,7 +4,6 @@ import { storageModel, usersModel } from 'mongo.js';
 import {
     download,
     downloadToDisk,
-    execute,
     getSizeBytes,
     hash,
     makeDir,
@@ -18,6 +17,8 @@ import { env } from 'env.js';
 import { DanserSettings } from 'utils/index.js';
 import { Replay } from 'osr-loader';
 import { Client as OsuApi } from 'osu-web.js';
+import { danserStdoutParser } from 'utils/danserStdoutParser.js';
+import { spawn } from 'child_process';
 
 /**
  * Run the Danser executable with the given options to process a replay into a video.
@@ -78,17 +79,41 @@ export async function render(job: Bull.Job<queue.RecordJob>): Promise<void> {
 
         await writeFile(replayFileLocation, replayFile);
 
-        job.updateProgress(10);
-
         await danserSettings.patch();
 
-        await execute(env.DANSER_EXECUTABLE_PATH, [
-            `--replay=${replayFileLocation}`,
-            `--out=${beatmapChecksum}`,
-            ...job.data.danserOptions
-        ]);
+        // RUN DANSER 🥳
+        await new Promise<void>((resolve, reject) => {
+            const process = spawn(env.DANSER_EXECUTABLE_PATH, [
+                `--replay=${replayFileLocation}`,
+                `--out=${beatmapChecksum}`,
+                ...job.data.danserOptions
+            ]);
 
-        job.updateProgress(80);
+            process.stdout.on('data', (stdout) => {
+                try {
+                    console.log(stdout.toString());
+                    const data = danserStdoutParser(stdout.toString());
+
+                    if (data.type === 'PROGRESS') {
+                        job.updateProgress(data.percentage);
+                    }
+                } catch (error) {
+                    console.error('Error parsing danser stdout:', error);
+                }
+            });
+
+            process.stderr.on('data', (stderr) => {
+                console.error(stderr.toString());
+            });
+
+            process.on('close', (code) => {
+                if (code === 0) {
+                    resolve();
+                }
+
+                reject(new Error(`Process ${env.DANSER_EXECUTABLE_PATH} exited with code ${code}`));
+            });
+        });
 
         console.info('Finished rendering video! 📽️');
 
@@ -116,8 +141,6 @@ export async function render(job: Bull.Job<queue.RecordJob>): Promise<void> {
 
         console.info(`Uploaded ${replayVideoLocation} as ${s3Filename} to object storage!`);
 
-        job.updateProgress(90);
-
         const fileDownloadUrl = new URL(s3Storage.endpoint);
 
         fileDownloadUrl.pathname = `/${env.S3_BUCKET_NAME}/${s3Filename}`;
@@ -136,8 +159,6 @@ export async function render(job: Bull.Job<queue.RecordJob>): Promise<void> {
         await rm(replaysTempDir, { recursive: true });
         await rm(videosTempDir, { recursive: true });
         await rm(songsTempDir, { recursive: true });
-
-        job.updateProgress(100);
     } catch (error) {
         // BullMQ will automatically retry the job if an error is thrown
         // But, it does not log the error by default it seems so we should log it here

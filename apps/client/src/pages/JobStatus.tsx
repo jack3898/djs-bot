@@ -47,7 +47,7 @@ export function JobStatus(): JSX.Element {
                 className={`min-w-[32rem] text-center rounded border-4 p-4 shadow-xl ${borderColour} bg-white`}
             >
                 <h1 className="text-xl pb-4">{`Job Status (#${id})`}</h1>
-                <p>Percent: {data.data?.progress}</p>
+                <p>Render percent: {data.data?.progress}</p>
                 <p>Status: {data.data?.status.toLocaleUpperCase()}</p>
             </div>
         </div>
