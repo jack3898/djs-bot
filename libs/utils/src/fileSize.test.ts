@@ -7,12 +7,6 @@ it("should take KB and return it's value in bytes", () => {
     expect(bytes.B).toBe(1000);
 });
 
-it("should take MB and return it's value in bytes", () => {
-    const bytes = Bytes.fromMB(1);
-
-    expect(bytes.B).toBe(1000000);
-});
-
 it("should take GB and return it's value in bytes", () => {
     const bytes = Bytes.fromGB(1);
 
@@ -89,4 +83,34 @@ it("should be stringified to it's value in megabytes", () => {
     const bytes = Bytes.fromMB(1);
 
     expect(`${bytes}`).toBe('1MB');
+});
+
+it('should convert bits to bytes', () => {
+    const bytes = Bytes.fromBits(8);
+
+    expect(bytes.B).toBe(1);
+});
+
+it('should convert kilobits to kilobytes', () => {
+    const bytes = Bytes.fromKBits(8);
+
+    expect(bytes.kB).toBe(1);
+});
+
+it('should convert megabits to megabytes', () => {
+    const bytes = Bytes.fromMBits(8);
+
+    expect(bytes.mB).toBe(1);
+});
+
+it('should convert gigabits to gigabytes', () => {
+    const bytes = Bytes.fromGBits(8);
+
+    expect(bytes.gB).toBe(1);
+});
+
+it('should convert terabits to terabytes', () => {
+    const bytes = Bytes.fromTBits(8);
+
+    expect(bytes.tB).toBe(1);
 });

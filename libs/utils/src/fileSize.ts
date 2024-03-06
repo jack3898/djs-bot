@@ -9,6 +9,26 @@
 export class Bytes {
     constructor(public B: number) {}
 
+    static fromBits(B: number): Bytes {
+        return this.fromB(B / 8);
+    }
+
+    static fromKBits(kB: number): Bytes {
+        return this.fromKB(kB / 8);
+    }
+
+    static fromMBits(mB: number): Bytes {
+        return this.fromMB(mB / 8);
+    }
+
+    static fromGBits(gB: number): Bytes {
+        return this.fromGB(gB / 8);
+    }
+
+    static fromTBits(tB: number): Bytes {
+        return this.fromTB(tB / 8);
+    }
+
     static fromB(B: number): Bytes {
         return new this(B);
     }
