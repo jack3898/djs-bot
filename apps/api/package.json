@@ -4,7 +4,8 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts --env-file .env",
+    "dev:app": "tsx watch src/index.ts --env-file .env",
+    "dev:tsc": "tsc --watch",
     "build": "tsc",
     "start": "node dist/index.js --env-file .env",
     "lint": "eslint",

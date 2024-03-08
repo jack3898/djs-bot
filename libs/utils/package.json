@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch",
+    "dev:tsc": "tsc --watch",
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest --watch",

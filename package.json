@@ -6,7 +6,7 @@
   "scripts": {
     "build": "nx run-many --target=build --all",
     "start": "nx run-many --target=start --all",
-    "dev": "nx run-many --target=dev --all --output-style=stream --parallel --max-parallel=10",
+    "dev": "nx run-many --targets=dev:tsc,dev:app --all --output-style=stream --parallel --max-parallel=10",
     "lint": "nx run-many --target=lint --all",
     "test": "nx run-many --target=test --all",
     "type-check": "nx run-many --target=type-check --all",

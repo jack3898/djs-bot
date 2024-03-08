@@ -23,11 +23,11 @@ export class Client extends DiscordClient {
      * Publishes all local slash commands registered using registerSlashCommands to Discord's API.
      */
     async publishSlashCommands(): Promise<void> {
-        const route = env.GUILD_ID
-            ? Routes.applicationGuildCommands(env.CLIENT_ID, env.GUILD_ID)
-            : Routes.applicationCommands(env.CLIENT_ID);
+        const route = env.DISCORD_GUILD_ID
+            ? Routes.applicationGuildCommands(env.DISCORD_CLIENT_ID, env.DISCORD_GUILD_ID)
+            : Routes.applicationCommands(env.DISCORD_CLIENT_ID);
 
-        if (!env.GUILD_ID) {
+        if (!env.DISCORD_GUILD_ID) {
             console.warn(
                 'No GUILD_ID was provided, this means the commands will be global and may take up to an hour to propagate.'
             );

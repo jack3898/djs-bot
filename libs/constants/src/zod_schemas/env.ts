@@ -14,8 +14,10 @@ export const jwtEnv = {
 
 export const discordEnv = {
     DISCORD_TOKEN: z.string().min(1),
-    CLIENT_ID: z.string().min(1),
-    GUILD_ID: z.string().optional()
+    DISCORD_CLIENT_ID: z.string().min(1),
+    DISCORD_GUILD_ID: z.string().optional(),
+    DISCORD_CLIENT_SECRET: z.string().min(1),
+    DISCORD_REDIRECT_URI: z.string().transform(toUrl)
 };
 
 export const danserEnv = {

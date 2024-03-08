@@ -5,6 +5,7 @@ import { zodSchemas } from '@bot/constants';
 export const env = await getEnvBySchema(
     z
         .object({})
+        .extend(zodSchemas.env.discordEnv)
         .extend(zodSchemas.env.siteEnv)
         .extend(zodSchemas.env.coreEnv)
         .extend(zodSchemas.env.jwtEnv)

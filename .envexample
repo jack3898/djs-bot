@@ -4,8 +4,10 @@ JWT_SECRET= # Must be at least 36 characters long. Conveniently, the length of a
 # You will need to create your own Discord bot at https://discord.com/developers/applications
 # Then once you have filled the necessary fields, invite it to your server. There are plenty of guides online on how to do this.
 DISCORD_TOKEN=
-CLIENT_ID=
-GUILD_ID=
+DISCORD_CLIENT_ID=
+DISCORD_GUILD_ID=
+DISCORD_CLIENT_SECRET= # OAuth2 secret
+DISCORD_REDIRECT_URI=
 
 # A lot of the paths are used by the worker for temporary object storage.
 # Must be absolute paths only for all fields.
