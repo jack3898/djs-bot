@@ -1,15 +1,23 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/index.js';
+import {
+    Button,
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    Separator
+} from '@/components/ui/index.js';
 
 export function App(): JSX.Element {
     return (
         <>
-            <Card className="max-w-96 mx-auto mt-8">
+            <Card className="max-w-6xl mx-auto mt-8">
                 <CardHeader>
-                    <CardTitle>Whoa, there!</CardTitle>
+                    <CardTitle>Ohss bot</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p>More of the website is on the way!</p>
-                    <p>For now, enjoy this chicken: 🐔</p>
+                    <p>This website is in development, and is subject to substantial change!</p>
+                    <Separator className="my-4" />
+                    <Button>Log in with Discord</Button>
                 </CardContent>
             </Card>
         </>
