@@ -53,6 +53,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.515.0",
     "@fastify/static": "^7.0.1",
+    "@isaacs/ttlcache": "^1.4.1",
     "@trpc/next": "^10.45.1",
     "@trpc/server": "^10.45.1",
     "bullmq": "^5.3.0",

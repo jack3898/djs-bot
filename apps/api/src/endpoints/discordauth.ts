@@ -1,3 +1,4 @@
+import TTLCache from '@isaacs/ttlcache';
 import { env } from 'env.js';
 import { fastify } from 'server.js';
 import { z } from 'zod';
@@ -7,7 +8,13 @@ const getParamsSchema = z.object({
     state: z.string()
 });
 
-const stateList = new Set<string>(); // TODO: Use a cache with TTL
+// This is a simple in-memory cache to store the state parameter from the OAuth2 redirect
+// When the user is redirected back to the app, we can verify that the state is valid
+// Then we delete it from the cache
+const stateList = new TTLCache<string, boolean>({
+    ttl: 1_000 * 60 * 5, // 5 minutes,
+    max: 10_000 // Extreme, but just in case
+});
 
 function getRedirectUri(): string {
     const redirectUri = new URL(env.DISCORD_REDIRECT_URI);
@@ -20,10 +27,10 @@ function getRedirectUri(): string {
 // This endpoint will redirect the user to Discord's OAuth2 page with state
 fastify.get('/auth/discord/redirect', async (request, reply) => {
     const newUrl = new URL('https://discord.com/oauth2/authorize');
-    const state = crypto.randomUUID();
-
     newUrl.searchParams.set('redirect_uri', env.DISCORD_REDIRECT_URI.toString());
-    stateList.add(state);
+
+    const state = crypto.randomUUID();
+    stateList.set(state, true);
 
     const searchParams = new URLSearchParams({
         client_id: env.DISCORD_CLIENT_ID,
