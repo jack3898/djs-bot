@@ -1,5 +1,9 @@
 version: "3"
 
+volumes:
+  mongo:
+  keydb:
+
 services:
   mongo:
     container_name: mongo
@@ -10,7 +14,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - ./.data/mongo:/data/db
+      - mongo:/data/db
     command: mongod
 
   keydb:
@@ -22,5 +26,5 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./.data/keydb:/data/keydb
+      - keydb:/data
     command: keydb-server

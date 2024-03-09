@@ -33,6 +33,8 @@ fastify.get('/osucallback', async (request, reply) => {
     }
 
     // State is a JWT, it cannot be forged and contains the user's Discord ID
+    // A JWT is used over a standard random value, as the bot needs to know the user's Discord ID
+    // TODO: Use a cache with TTL
     const state = await jwt.verify(getParams.data.state);
     const { code } = getParams.data;
 
