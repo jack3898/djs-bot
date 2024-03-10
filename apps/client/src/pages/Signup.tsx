@@ -1,4 +1,4 @@
-import { Button, Separator } from '@/components/ui/index.js';
+import { Button, H1 } from '@/components/ui/index.js';
 import { DefaultLayout } from '@/layout/Default.js';
 import { trpcReact } from '@/trpcReact.js';
 
@@ -22,8 +22,11 @@ function LoginWithDiscord(): JSX.Element {
 
 export function Signup(): JSX.Element {
     return (
-        <DefaultLayout pageTitle="Sign up">
-            <Separator className="my-4" />
+        <DefaultLayout pageTitle={<H1>Sign up!</H1>}>
+            <p className="mb-4">
+                Log in with Discord to get the most out of Ohssbot, link renders to your account and
+                more!
+            </p>
             <LoginWithDiscord />
         </DefaultLayout>
     );

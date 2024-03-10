@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { JobStatus, NotFound, Home, Signup, Me } from './pages/index.js';
+import { Jobs, NotFound, Home, Signup, Me } from './pages/index.js';
 import { StrictMode } from 'react';
 import { TrpcProvider, ThemeProvider } from './context/index.js';
 
@@ -25,7 +25,7 @@ const router = createBrowserRouter([
     },
     {
         path: '/jobs/:id',
-        element: <JobStatus />
+        element: <Jobs />
     }
 ]);
 

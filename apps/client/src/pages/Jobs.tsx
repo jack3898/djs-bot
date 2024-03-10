@@ -1,13 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { trpcReact } from '../trpcReact.js';
-import {
-    Card,
-    CardHeader,
-    CardContent,
-    CardTitle,
-    Badge,
-    Progress
-} from '@/components/ui/index.js';
+import { H1, H2, Progress } from '@/components/ui/index.js';
+import { DefaultLayout } from '@/layout/Default.js';
 
 function JobCardContent({
     data,
@@ -47,7 +41,7 @@ function JobCardContent({
     return <></>;
 }
 
-export function JobStatus(): JSX.Element {
+export function Jobs(): JSX.Element {
     const { id } = useParams();
     const data = trpcReact.queue.useQuery(
         { jobId: String(id) },
@@ -64,21 +58,10 @@ export function JobStatus(): JSX.Element {
     );
 
     return (
-        <>
-            <Card className="max-w-96 mx-auto mt-8">
-                <CardHeader>
-                    <CardTitle>
-                        Job progress <Badge>#{id}</Badge>
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <JobCardContent
-                        data={data?.data}
-                        error={data.isError}
-                        loading={data.isLoading}
-                    />
-                </CardContent>
-            </Card>
-        </>
+        <DefaultLayout pageTitle={<H1>Job progress</H1>}>
+            <H2>Job #{id}</H2>
+            <br />
+            <JobCardContent data={data?.data} error={data.isError} loading={data.isLoading} />
+        </DefaultLayout>
     );
 }

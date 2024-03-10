@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/index.js';
 import { trpcReact } from '@/trpcReact.js';
 import { Link } from 'react-router-dom';
+import { HomeIcon, LogInIcon, CircleUserRoundIcon } from 'lucide-react';
 
 type DefaultLayoutProps = {
     pageTitle: React.ReactNode;
@@ -27,25 +28,43 @@ export function DefaultLayout({ children, pageTitle }: DefaultLayoutProps): JSX.
                 <NavigationMenu>
                     <NavigationMenuList className="inline-flex gap-1">
                         <NavigationMenuItem asChild>
-                            <Button asChild variant="outline">
+                            <Button asChild variant="outline" size="icon">
                                 <Link to="/" className={navigationMenuTriggerStyle()}>
-                                    <NavigationMenuLink>Home</NavigationMenuLink>
+                                    <NavigationMenuLink>
+                                        <HomeIcon className="h-4 w-4" />
+                                    </NavigationMenuLink>
                                 </Link>
                             </Button>
                         </NavigationMenuItem>
                         {!data?.authenticated ? (
                             <NavigationMenuItem asChild>
-                                <Button asChild variant="outline">
+                                <Button
+                                    asChild
+                                    variant="outline"
+                                    size="icon"
+                                    className="inline-flex gap-2"
+                                >
                                     <Link to="/signup" className={navigationMenuTriggerStyle()}>
-                                        <NavigationMenuLink>Sign up</NavigationMenuLink>
+                                        <NavigationMenuLink>
+                                            <LogInIcon className="h-4 w-4" />
+                                        </NavigationMenuLink>{' '}
+                                        Log in / Sign up
                                     </Link>
                                 </Button>
                             </NavigationMenuItem>
                         ) : (
                             <NavigationMenuItem asChild>
-                                <Button asChild variant="outline">
+                                <Button
+                                    asChild
+                                    variant="outline"
+                                    size="icon"
+                                    className="inline-flex gap-2"
+                                >
                                     <Link to="/me" className={navigationMenuTriggerStyle()}>
-                                        <NavigationMenuLink>Me</NavigationMenuLink>
+                                        <NavigationMenuLink>
+                                            <CircleUserRoundIcon className="h-[1.2rem] w-[1.2rem]" />
+                                        </NavigationMenuLink>{' '}
+                                        Account
                                     </Link>
                                 </Button>
                             </NavigationMenuItem>
