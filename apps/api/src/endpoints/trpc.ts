@@ -12,5 +12,6 @@ fastify.register(fastifyTRPCPlugin, {
             // report to error monitoring
             console.error(`Error in tRPC handler on path '${path}':`, error);
         }
-    } satisfies FastifyTRPCPluginOptions<TrpcRouter>['trpcOptions']
+    } satisfies FastifyTRPCPluginOptions<TrpcRouter>['trpcOptions'],
+    createContext
 });

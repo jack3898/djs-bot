@@ -26,8 +26,8 @@ function getRedirectUri(): string {
 
 // This endpoint will redirect the user to Discord's OAuth2 page with state
 fastify.get('/auth/discord/redirect', async (request, reply) => {
-    const newUrl = new URL('https://discord.com/oauth2/authorize');
-    newUrl.searchParams.set('redirect_uri', env.DISCORD_REDIRECT_URI.toString());
+    const discordOauthUrl = new URL('https://discord.com/oauth2/authorize');
+    discordOauthUrl.searchParams.set('redirect_uri', env.DISCORD_REDIRECT_URI.toString());
 
     const state = crypto.randomUUID();
     stateList.set(state, true);
@@ -40,9 +40,9 @@ fastify.get('/auth/discord/redirect', async (request, reply) => {
         state
     });
 
-    newUrl.search = searchParams.toString();
+    discordOauthUrl.search = searchParams.toString();
 
-    reply.redirect(newUrl.toString());
+    reply.redirect(discordOauthUrl.toString());
 });
 
 const accessTokenResponseSchema = z.object({
@@ -110,16 +110,11 @@ fastify.get('/auth/discord/callback', async (request, reply) => {
     reply.redirect('/');
 });
 
-fastify.get('/auth/discord/test', async (request) => {
-    const accessToken = request.headers.cookie
-        ?.match(/(?<=discordAccessToken=)[a-zA-Z0-9]*/)
-        ?.at(0);
+fastify.get('/auth/discord/logout', async (_, reply) => {
+    reply.header(
+        'Set-Cookie',
+        'discordAccessToken=; HttpOnly; Secure; SameSite=Strict; Max-Age=0; Path=/'
+    );
 
-    const userResult = await fetch('https://discord.com/api/users/@me', {
-        headers: {
-            authorization: `Bearer ${accessToken}`
-        }
-    });
-
-    return userResult.json();
+    reply.redirect('/');
 });

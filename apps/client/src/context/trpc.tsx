@@ -11,9 +11,8 @@ export function TrpcProvider({ children }: { children: React.ReactNode }): JSX.E
             links: [
                 httpBatchLink({
                     url: '/trpc',
-                    async headers() {
-                        // Will use soon for auth
-                        return {};
+                    headers: {
+                        credentials: 'include'
                     }
                 })
             ]
