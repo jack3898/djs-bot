@@ -66,23 +66,23 @@ export class Bytes {
     }
 
     get BFriendly(): `${number}B` {
-        return `${this.B}B`;
+        return `${Math.round(this.B)}B`;
     }
 
     get kBFriendly(): `${number}KB` {
-        return `${this.kB}KB`;
+        return `${Math.round(this.kB)}KB`;
     }
 
     get mBFriendly(): `${number}MB` {
-        return `${this.mB}MB`;
+        return `${Math.round(this.mB)}MB`;
     }
 
     get gBFriendly(): `${number}GB` {
-        return `${this.gB}GB`;
+        return `${Math.round(this.gB)}GB`;
     }
 
     get tBFriendly(): `${number}TB` {
-        return `${this.tB}TB`;
+        return `${Math.round(this.tB)}TB`;
     }
 
     toString(): string {

@@ -41,4 +41,13 @@ const storageSchema = new Schema(
 
 storageSchema.index({ discordOwnerId: 1 });
 
+storageSchema.set('toJSON', {
+    transform: (_, ret) => {
+        ret.id = ret._id;
+
+        delete ret._id;
+        delete ret.__v;
+    }
+});
+
 export { storageSchema };
