@@ -7,7 +7,7 @@ DISCORD_TOKEN=
 DISCORD_CLIENT_ID=
 DISCORD_GUILD_ID=
 DISCORD_CLIENT_SECRET= # OAuth2 secret
-DISCORD_REDIRECT_URI=
+DISCORD_REDIRECT_URI= # Include the /auth/discord/callback path at the end
 
 # A lot of the paths are used by the worker for temporary object storage.
 # Must be absolute paths only for all fields.
@@ -37,7 +37,7 @@ S3_BUCKET_NAME=
 # This is used to contact the Osu! API for Osu! related information like beatmaps.
 OSU_CLIENT_ID=
 OSU_CLIENT_SECRET=
-OSU_REDIRECT_URI=
+OSU_REDIRECT_URI= # Include the /auth/discord/callback path at the end
 
 # Site options
 SITE_URL=http://localhost

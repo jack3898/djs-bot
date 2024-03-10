@@ -2,12 +2,12 @@ import { type CommandInteraction, SlashCommandBuilder, ActionRowBuilder } from '
 import { type Command } from 'types/index.js';
 import { createLoginWithOsuButton } from 'components/index.js';
 
-export const auth: Command = {
+export const linkOsu: Command = {
     get name(): string {
         return this.definition.name;
     },
     definition: new SlashCommandBuilder()
-        .setName('auth')
+        .setName('link-osu')
         .setDescription('Associate your Discord account with your Osu! account through this bot.'),
     async execute(interaction: CommandInteraction): Promise<void> {
         const authButton = await createLoginWithOsuButton(interaction.user.id);

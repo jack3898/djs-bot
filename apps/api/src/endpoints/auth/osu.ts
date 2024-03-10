@@ -23,7 +23,7 @@ const oauthTokenSchema = z.object({
 /**
  * @see https://osu.ppy.sh/docs/index.html#authorization-code-grant
  */
-fastify.get('/osucallback', async (request, reply) => {
+fastify.get('/auth/osu/callback', async (request, reply) => {
     const getParams = await getParamsSchema.safeParseAsync(request.query);
 
     if (!getParams.success) {

@@ -17,7 +17,7 @@ client[events.interactionCreate.mode](Events.InteractionCreate, events.interacti
 // Again, no point overcomplicating this with loops!
 client.registerSlashCommand(commands.render);
 client.registerSlashCommand(commands.replays);
-client.registerSlashCommand(commands.auth);
+client.registerSlashCommand(commands.linkOsu);
 
 // Strap things up!
 client.publishSlashCommands();

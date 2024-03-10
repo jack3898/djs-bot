@@ -16,33 +16,23 @@ const stateList = new TTLCache<string, boolean>({
     max: 10_000 // Extreme, but just in case
 });
 
-function getRedirectUri(): string {
-    const redirectUri = new URL(env.DISCORD_REDIRECT_URI);
-
-    redirectUri.pathname = 'auth/discord/callback';
-
-    return decodeURIComponent(redirectUri.toString());
-}
-
 // This endpoint will redirect the user to Discord's OAuth2 page with state
 fastify.get('/auth/discord/redirect', async (request, reply) => {
-    const discordOauthUrl = new URL('https://discord.com/oauth2/authorize');
-    discordOauthUrl.searchParams.set('redirect_uri', env.DISCORD_REDIRECT_URI.toString());
-
     const state = crypto.randomUUID();
     stateList.set(state, true);
 
     const searchParams = new URLSearchParams({
         client_id: env.DISCORD_CLIENT_ID,
         response_type: 'code',
-        redirect_uri: getRedirectUri(),
+        redirect_uri: env.DISCORD_REDIRECT_URI.toString(),
         scope: 'identify',
         state
     });
 
-    discordOauthUrl.search = searchParams.toString();
+    const discordOauthRedirectUrl = new URL('https://discord.com/oauth2/authorize');
+    discordOauthRedirectUrl.search = searchParams.toString();
 
-    reply.redirect(discordOauthUrl.toString());
+    reply.redirect(discordOauthRedirectUrl.toString());
 });
 
 const accessTokenResponseSchema = z.object({
@@ -87,7 +77,7 @@ fastify.get('/auth/discord/callback', async (request, reply) => {
             client_secret: env.DISCORD_CLIENT_SECRET,
             grant_type: 'authorization_code',
             code,
-            redirect_uri: getRedirectUri()
+            redirect_uri: env.DISCORD_REDIRECT_URI.toString()
         }).toString()
     });
 
