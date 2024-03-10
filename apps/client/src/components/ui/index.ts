@@ -5,3 +5,4 @@ export * from './dropdown-menu.js';
 export * from './mode-toggle.js';
 export * from './progress.js';
 export * from './separator.js';
+export * from './navigation-menu.js';

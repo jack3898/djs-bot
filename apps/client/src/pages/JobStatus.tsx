@@ -6,9 +6,7 @@ import {
     CardContent,
     CardTitle,
     Badge,
-    ModeToggle,
-    Progress,
-    Separator
+    Progress
 } from '@/components/ui/index.js';
 
 function JobCardContent({
@@ -79,8 +77,6 @@ export function JobStatus(): JSX.Element {
                         error={data.isError}
                         loading={data.isLoading}
                     />
-                    <Separator className="my-4" />
-                    <ModeToggle />
                 </CardContent>
             </Card>
         </>
