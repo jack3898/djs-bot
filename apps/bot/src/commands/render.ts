@@ -8,7 +8,7 @@ import {
 } from 'discord.js';
 import { type Command } from 'types/index.js';
 import { recordReplayQueue } from 'queues.js';
-import { colours, queue, common } from '@bot/constants';
+import { colours, jobs, common } from '@bot/constants';
 import { env } from 'env.js';
 import { storageModel } from 'mongo.js';
 import { Bytes } from '@bot/utils';
@@ -87,7 +87,7 @@ export const render: Command = {
             return;
         }
 
-        const job = await recordReplayQueue.add(queue.QUEUE_KEYS.RECORD, {
+        const job = await recordReplayQueue.add(jobs.QUEUE_KEYS.RECORD, {
             replayDownloadUrl: replayUrl,
             friendlyName: String(replayFilename),
             discordUserId: interaction.user.id,

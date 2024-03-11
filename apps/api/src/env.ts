@@ -12,4 +12,5 @@ export const env = await getEnvBySchema(
         .extend(zodSchemas.env.mongoEnv)
         .extend(zodSchemas.env.osuEnv)
         .extend(zodSchemas.env.keydbEnv)
+        .extend(zodSchemas.env.s3Env)
 );

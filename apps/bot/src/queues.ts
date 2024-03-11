@@ -1,4 +1,4 @@
-import { queue } from '@bot/constants';
+import { jobs } from '@bot/constants';
 import { env } from './env.js';
 import { Queue } from 'bullmq';
 
@@ -11,6 +11,6 @@ const connection = {
 /**
  * Queue for processing Osu! replay files ready for delegation to the Danser processe(s).
  */
-export const recordReplayQueue = new Queue<queue.RecordJob>(queue.QUEUE_KEYS.RECORD, {
+export const recordReplayQueue = new Queue<jobs.RecordJob>(jobs.QUEUE_KEYS.RECORD, {
     connection
 });

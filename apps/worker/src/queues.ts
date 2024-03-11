@@ -1,11 +1,16 @@
-import { queue, common } from '@bot/constants';
+import { jobs, common } from '@bot/constants';
 import { Worker } from 'bullmq';
 import { env } from 'env.js';
 import { render } from 'jobs/index.js';
 import { storageModel } from 'mongo.js';
 
-export const recordReplayQueueWorker = new Worker<queue.RecordJob>(
-    queue.QUEUE_KEYS.RECORD,
+const connection = {
+    host: env.KEYDB_URI.hostname,
+    port: +env.KEYDB_URI.port
+};
+
+export const recordReplayQueueWorker = new Worker<jobs.RecordJob>(
+    jobs.QUEUE_KEYS.RECORD,
     async (job): Promise<void> => {
         console.log(`Processing job ${job.id}\nJob details: ${JSON.stringify(job.data, null, 2)}`);
 
@@ -23,10 +28,7 @@ export const recordReplayQueueWorker = new Worker<queue.RecordJob>(
         return render(job);
     },
     {
-        connection: {
-            host: env.KEYDB_URI.hostname,
-            port: +env.KEYDB_URI.port
-        },
+        connection,
         removeOnFail: { count: 3 }
     }
 );

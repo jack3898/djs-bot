@@ -1,5 +1,6 @@
 export const QUEUE_KEYS = {
-    RECORD: 'RECORD'
+    RECORD: 'RECORD',
+    MANAGE_S3: 'MANAGE_S3'
 } as const;
 
 export type RecordJob = {
@@ -7,6 +8,11 @@ export type RecordJob = {
     friendlyName: string;
     discordUserId: string;
     danserOptions: (`--settings=${string}` | `--quickstart`)[];
+};
+
+export type ManageS3 = {
+    action: 'DELETE';
+    fileName: string;
 };
 
 export type KeyType = (typeof QUEUE_KEYS)[keyof typeof QUEUE_KEYS];

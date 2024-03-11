@@ -1,4 +1,4 @@
-import { type queue } from '@bot/constants';
+import { type jobs } from '@bot/constants';
 import type Bull from 'bullmq';
 import { storageModel, usersModel } from 'mongo.js';
 import {
@@ -24,7 +24,7 @@ import { spawn } from 'child_process';
  * Run the Danser executable with the given options to process a replay into a video.
  * Downloads the replay file from the database and saves it to a temporary location before running Danser.
  */
-export async function render(job: Bull.Job<queue.RecordJob>): Promise<void> {
+export async function render(job: Bull.Job<jobs.RecordJob>): Promise<void> {
     try {
         // Replay file should be small enough to download and process in memory
         const replayFile = await download(new URL(job.data.replayDownloadUrl));

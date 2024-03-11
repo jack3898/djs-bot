@@ -4,7 +4,9 @@ import {
     type PutObjectCommandOutput,
     S3Client,
     GetObjectCommand,
-    type GetObjectCommandOutput
+    type GetObjectCommandOutput,
+    DeleteObjectCommand,
+    type DeleteObjectCommandOutput
 } from '@aws-sdk/client-s3';
 import { type ReadStream } from 'fs';
 
@@ -59,6 +61,15 @@ export class S3Storage {
     download(filename: string): Promise<GetObjectCommandOutput> {
         return this.client.send(
             new GetObjectCommand({
+                Bucket: this.bucketName,
+                Key: filename
+            })
+        );
+    }
+
+    delete(filename: string): Promise<DeleteObjectCommandOutput> {
+        return this.client.send(
+            new DeleteObjectCommand({
                 Bucket: this.bucketName,
                 Key: filename
             })
