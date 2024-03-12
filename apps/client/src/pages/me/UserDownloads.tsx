@@ -10,13 +10,12 @@ import {
     TableRow,
     Tooltip,
     TooltipContent,
-    TooltipProvider,
     TooltipTrigger
 } from '@/components/ui/index.js';
 import { trpcReact } from '@/trpcReact.js';
 import { cn } from '@/utils/cn.js';
 import { ArrowDownToLine, CheckIcon, RefreshCw, Trash2Icon } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 
 function DownloadFileButton({ url }: { url: string }): JSX.Element {
@@ -80,16 +79,12 @@ function RefreshFileListButton({
 export function UserDownloads(): JSX.Element {
     const { data, isLoading, refetch, isFetching } = trpcReact.userFiles.useQuery();
 
-    const refresh = useCallback(() => {
-        refetch();
-    }, [refetch]);
-
     if (isLoading || isFetching) {
         return (
             <>
                 <div className="flex gap-2 justify-between">
                     <H3 className="mb-4">Your Files</H3>
-                    <RefreshFileListButton onClick={refresh} spin={isFetching} />
+                    <RefreshFileListButton onClick={refetch} spin={isFetching} />
                 </div>
                 <em>Please wait...</em>
             </>
@@ -101,7 +96,7 @@ export function UserDownloads(): JSX.Element {
             <>
                 <div className="flex gap-2 justify-between">
                     <H3 className="mb-4">Your Files</H3>
-                    <RefreshFileListButton onClick={refresh} spin={isFetching} />
+                    <RefreshFileListButton onClick={refetch} spin={isFetching} />
                 </div>
                 <em>No files found.</em>
             </>
@@ -112,7 +107,7 @@ export function UserDownloads(): JSX.Element {
         <>
             <div className="flex gap-2 justify-between">
                 <H3 className="mb-4">Your Files</H3>
-                <RefreshFileListButton onClick={refresh} spin={isFetching} />
+                <RefreshFileListButton onClick={refetch} spin={isFetching} />
             </div>
             <Card>
                 <Table>

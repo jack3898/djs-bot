@@ -1,6 +1,6 @@
 import { type jobs } from '@bot/constants';
 import type Bull from 'bullmq';
-import { storageModel, usersModel } from 'mongo.js';
+import { jobsModel, storageModel, usersModel } from 'mongo.js';
 import {
     download,
     downloadToDisk,
@@ -26,6 +26,11 @@ import { spawn } from 'child_process';
  */
 export async function render(job: Bull.Job<jobs.RecordJob>): Promise<void> {
     try {
+        await jobsModel.findOneAndUpdate(
+            { jobId: job.id, discordId: job.data.discordUserId },
+            { status: 'active' }
+        );
+
         // Replay file should be small enough to download and process in memory
         const replayFile = await download(new URL(job.data.replayDownloadUrl));
 
@@ -159,10 +164,24 @@ export async function render(job: Bull.Job<jobs.RecordJob>): Promise<void> {
         await rm(replaysTempDir, { recursive: true });
         await rm(videosTempDir, { recursive: true });
         await rm(songsTempDir, { recursive: true });
+
+        if (job.id) {
+            await jobsModel.findOneAndUpdate(
+                { jobId: job.id, discordId: job.data.discordUserId },
+                { status: 'completed' }
+            );
+        }
     } catch (error) {
         // BullMQ will automatically retry the job if an error is thrown
         // But, it does not log the error by default it seems so we should log it here
         console.error('Error processing job:', error);
+
+        if (job.id) {
+            await jobsModel.findOneAndUpdate(
+                { jobId: job.id, discordId: job.data.discordUserId },
+                { status: 'failed' }
+            );
+        }
 
         throw error;
     }

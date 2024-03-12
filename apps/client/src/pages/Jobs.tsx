@@ -43,7 +43,7 @@ function JobCardContent({
 
 export function Jobs(): JSX.Element {
     const { id } = useParams();
-    const data = trpcReact.queue.useQuery(
+    const data = trpcReact.job.useQuery(
         { jobId: String(id) },
         {
             refetchInterval(data) {

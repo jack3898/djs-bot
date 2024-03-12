@@ -2,6 +2,7 @@ import { Button, H1, Separator } from '@/components/ui/index.js';
 import { DefaultLayout } from '@/layout/Default.js';
 import { trpcReact } from '@/trpcReact.js';
 import { UserDownloads } from './UserDownloads.js';
+import { UserJobs } from './UserJobs.js';
 
 export function Me(): JSX.Element {
     const { data } = trpcReact.me.useQuery();
@@ -20,6 +21,7 @@ export function Me(): JSX.Element {
                 You are currently logged in as <strong>{data?.username}</strong>!
             </p>
             <Separator className="my-4" />
+            <UserJobs />
             <UserDownloads />
             <Separator className="my-4" />
             <Button asChild>

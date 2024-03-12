@@ -10,7 +10,7 @@ import { type Command } from 'types/index.js';
 import { recordReplayQueue } from 'queues.js';
 import { colours, jobs, common } from '@bot/constants';
 import { env } from 'env.js';
-import { storageModel } from 'mongo.js';
+import { jobsModel, storageModel } from 'mongo.js';
 import { Bytes } from '@bot/utils';
 import { isOsuAuthenticated } from 'guards/index.js';
 import { createLoginWithOsuButton } from 'components/index.js';
@@ -92,6 +92,12 @@ export const render: Command = {
             friendlyName: String(replayFilename),
             discordUserId: interaction.user.id,
             danserOptions: ['--quickstart', `--settings=default`]
+        });
+
+        await jobsModel.create({
+            discordId: interaction.user.id,
+            jobId: job.id,
+            status: await job.getState()
         });
 
         const jobUrl = new URL(env.SITE_URL);
