@@ -1,4 +1,4 @@
-import { Button, H1, H3, Separator } from '@/components/ui/index.js';
+import { Button, H1, Separator } from '@/components/ui/index.js';
 import { DefaultLayout } from '@/layout/Default.js';
 import { trpcReact } from '@/trpcReact.js';
 import { UserDownloads } from './UserDownloads.js';
@@ -20,7 +20,6 @@ export function Me(): JSX.Element {
                 You are currently logged in as <strong>{data?.username}</strong>!
             </p>
             <Separator className="my-4" />
-            <H3 className="mb-4">Your Files</H3>
             <UserDownloads />
             <Separator className="my-4" />
             <Button asChild>

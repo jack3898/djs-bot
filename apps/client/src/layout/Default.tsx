@@ -30,7 +30,7 @@ export function DefaultLayout({ children, pageTitle }: DefaultLayoutProps): JSX.
                         <NavigationMenuItem asChild>
                             <Button asChild variant="outline" size="icon">
                                 <Link to="/" className={navigationMenuTriggerStyle()}>
-                                    <NavigationMenuLink>
+                                    <NavigationMenuLink asChild>
                                         <HomeIcon className="h-4 w-4" />
                                     </NavigationMenuLink>
                                 </Link>
@@ -45,7 +45,7 @@ export function DefaultLayout({ children, pageTitle }: DefaultLayoutProps): JSX.
                                     className="inline-flex gap-2"
                                 >
                                     <Link to="/signup" className={navigationMenuTriggerStyle()}>
-                                        <NavigationMenuLink>
+                                        <NavigationMenuLink asChild>
                                             <LogInIcon className="h-4 w-4" />
                                         </NavigationMenuLink>{' '}
                                         Log in / Sign up
@@ -61,7 +61,7 @@ export function DefaultLayout({ children, pageTitle }: DefaultLayoutProps): JSX.
                                     className="inline-flex gap-2"
                                 >
                                     <Link to="/me" className={navigationMenuTriggerStyle()}>
-                                        <NavigationMenuLink>
+                                        <NavigationMenuLink asChild>
                                             <CircleUserRoundIcon className="h-[1.2rem] w-[1.2rem]" />
                                         </NavigationMenuLink>{' '}
                                         Account
