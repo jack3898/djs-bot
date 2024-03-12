@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Jobs, NotFound, Home, Signup, Me } from './pages/index.js';
 import { StrictMode } from 'react';
 import { TrpcProvider, ThemeProvider } from './context/index.js';
+import { TooltipProvider } from './components/ui/index.js';
 
 const root = document.getElementById('root');
 
@@ -32,11 +33,13 @@ const router = createBrowserRouter([
 if (root !== null) {
     createRoot(root).render(
         <StrictMode>
-            <ThemeProvider>
-                <TrpcProvider>
-                    <RouterProvider router={router} />
-                </TrpcProvider>
-            </ThemeProvider>
+            <TooltipProvider>
+                <ThemeProvider>
+                    <TrpcProvider>
+                        <RouterProvider router={router} />
+                    </TrpcProvider>
+                </ThemeProvider>
+            </TooltipProvider>
         </StrictMode>
     );
 }

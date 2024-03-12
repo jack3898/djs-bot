@@ -17,21 +17,20 @@ import { trpcReact } from '@/trpcReact.js';
 import { cn } from '@/utils/cn.js';
 import { ArrowDownToLine, CheckIcon, RefreshCw, Trash2Icon } from 'lucide-react';
 import { useCallback, useState } from 'react';
+import { formatDistanceToNow } from 'date-fns';
 
 function DownloadFileButton({ url }: { url: string }): JSX.Element {
     return (
-        <TooltipProvider>
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" asChild>
-                        <a href={url}>
-                            <ArrowDownToLine className="w-4 h-4" />
-                        </a>
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent>Download</TooltipContent>
-            </Tooltip>
-        </TooltipProvider>
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" asChild>
+                    <a href={url}>
+                        <ArrowDownToLine className="w-4 h-4" />
+                    </a>
+                </Button>
+            </TooltipTrigger>
+            <TooltipContent>Download</TooltipContent>
+        </Tooltip>
     );
 }
 
@@ -44,20 +43,18 @@ function DeleteFileButton({ id }: { id: string }): JSX.Element {
     });
 
     return (
-        <TooltipProvider>
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="destructive" size="icon" onClick={() => mutate(id)}>
-                        {deleted ? (
-                            <CheckIcon className="w-4 h-4" />
-                        ) : (
-                            <Trash2Icon className="w-4 h-4" />
-                        )}
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent>Permanently delete</TooltipContent>
-            </Tooltip>
-        </TooltipProvider>
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <Button variant="destructive" size="icon" onClick={() => mutate(id)}>
+                    {deleted ? (
+                        <CheckIcon className="w-4 h-4" />
+                    ) : (
+                        <Trash2Icon className="w-4 h-4" />
+                    )}
+                </Button>
+            </TooltipTrigger>
+            <TooltipContent>Permanently delete</TooltipContent>
+        </Tooltip>
     );
 }
 
@@ -69,9 +66,14 @@ function RefreshFileListButton({
     spin: boolean;
 }): JSX.Element {
     return (
-        <Button onClick={onClick} size="icon" variant="outline" className="mb-2">
-            <RefreshCw className={cn(`w-4 h-f ${spin ? 'animate-spin' : ''}`)} />
-        </Button>
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <Button onClick={onClick} size="icon" variant="outline" className="mb-2">
+                    <RefreshCw className={cn(`w-4 h-f ${spin ? 'animate-spin' : ''}`)} />
+                </Button>
+            </TooltipTrigger>
+            <TooltipContent>Refresh file list</TooltipContent>
+        </Tooltip>
     );
 }
 
@@ -116,8 +118,9 @@ export function UserDownloads(): JSX.Element {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Name</TableHead>
+                            <TableHead className="w-full">Name</TableHead>
                             <TableHead>Size</TableHead>
+                            <TableHead>Uploaded</TableHead>
                             <TableHead>Action</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -127,6 +130,19 @@ export function UserDownloads(): JSX.Element {
                                 <TableRow key={file.id}>
                                     <TableCell>{file.name}</TableCell>
                                     <TableCell>{file.size}</TableCell>
+                                    <TableCell>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <span className="whitespace-nowrap">
+                                                    {formatDistanceToNow(new Date(file.createdAt)) +
+                                                        ' ago'}
+                                                </span>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                {new Date(file.createdAt).toLocaleString()}
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TableCell>
                                     <TableCell className="flex gap-2">
                                         <DownloadFileButton url={file.url} />
                                         <DeleteFileButton id={file.id} />

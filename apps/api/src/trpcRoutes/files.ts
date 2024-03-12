@@ -13,6 +13,7 @@ export const filesRouter = trpc.router({
                     id: z.string(),
                     url: z.string(),
                     name: z.string(),
+                    createdAt: z.date(),
                     size: z.number().transform((val) => {
                         return Bytes.fromB(val).mBFriendly;
                     })
