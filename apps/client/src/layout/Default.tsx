@@ -3,7 +3,6 @@ import {
     Card,
     CardContent,
     CardHeader,
-    ModeToggle,
     NavigationMenu,
     NavigationMenuItem,
     NavigationMenuLink,
@@ -13,6 +12,7 @@ import {
 import { trpcReact } from '@/trpcReact.js';
 import { Link } from 'react-router-dom';
 import { HomeIcon, LogInIcon, CircleUserRoundIcon } from 'lucide-react';
+import { LightDarkModeToggle } from '@/components/common/index.js';
 
 type DefaultLayoutProps = {
     pageTitle: React.ReactNode;
@@ -71,7 +71,7 @@ export function DefaultLayout({ children, pageTitle }: DefaultLayoutProps): JSX.
                         )}
                     </NavigationMenuList>
                 </NavigationMenu>
-                <ModeToggle />
+                <LightDarkModeToggle />
             </div>
             <Card className="mt-4">
                 <CardHeader>{pageTitle}</CardHeader>
