@@ -4,7 +4,9 @@ module.exports = {
     extends: [
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
-        'plugin:prettier/recommended'
+        'plugin:prettier/recommended',
+        'plugin:react/recommended',
+        'plugin:react-hooks/recommended'
     ],
     parser: '@typescript-eslint/parser',
     parserOptions: {
@@ -39,7 +41,9 @@ module.exports = {
         '@typescript-eslint/no-explicit-any': 'error',
         '@typescript-eslint/no-unused-vars': 'error',
         '@typescript-eslint/explicit-function-return-type': 'error',
-        '@typescript-eslint/consistent-type-assertions': 'error'
+        '@typescript-eslint/consistent-type-assertions': 'error',
+        'react/react-in-jsx-scope': 'off',
+        'react/no-unescaped-entities': 'off'
     },
     ignorePatterns: ['dist']
 };

@@ -4,12 +4,17 @@
       "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/dist"],
       "inputs": ["{projectRoot}/**/*", "!{projectRoot}/dist/**/*"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"],
+      "outputs": [],
+      "inputs": ["{projectRoot}/**/*", "!{projectRoot}/dist/**/*"]
     }
   },
   "tasksRunnerOptions": {
     "default": {
       "options": {
-        "cacheableOperations": ["build"]
+        "cacheableOperations": ["build", "lint"]
       }
     }
   }
