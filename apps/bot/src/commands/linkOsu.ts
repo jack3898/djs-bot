@@ -10,7 +10,7 @@ export const linkOsu: Command = {
         .setName('link-osu')
         .setDescription('Associate your Discord account with your Osu! account through this bot.'),
     async execute(interaction: CommandInteraction): Promise<void> {
-        const authButton = await createLoginWithOsuButton(interaction.user.id);
+        const authButton = await createLoginWithOsuButton();
         const actionRow = new ActionRowBuilder().addComponents(authButton);
 
         await interaction.reply({

@@ -30,3 +30,21 @@ export async function getDiscordUserByToken(
 
     return discordUserFetchResponseSchema.parse(await userResult.json());
 }
+
+export async function fetchDiscordUser(
+    cookie: string
+): Promise<z.infer<typeof discordUserSchema> | null> {
+    const discordAccessToken = cookie?.match(/(?<=discordAccessToken=)[a-zA-Z0-9]*/)?.at(0);
+
+    if (!discordAccessToken) {
+        return null;
+    }
+
+    const userResult = await getDiscordUserByToken(discordAccessToken);
+
+    if (userResult.authenticated) {
+        return userResult;
+    }
+
+    return null;
+}
